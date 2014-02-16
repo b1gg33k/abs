@@ -11,7 +11,7 @@ import java.util.Map;
  * Date: 2/12/14
  * Time: 11:55 PM
  */
-public class PersonaManager {
+public class PersonaManager extends BaseManager {
 	private PersonaManager instance = new PersonaManager();
 	private static Map<String,Persona> personaCache = new HashMap<String, Persona>();
 	private ExperimentManager experimentManager = ExperimentManager.getInstance();

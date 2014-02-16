@@ -9,10 +9,14 @@ import java.util.Map;
  * Date: 2/13/14
  * Time: 2:46 AM
  */
-public class Configuration implements Serializable {
+public class Configuration extends BaseEntity implements IEntity {
 	private Long experimentTTL = null;
 	private Long PersonaTTL = null;
 	private Map<String,Configuration> hostConfigurations = null;
+
+	protected Configuration(String id) {
+		super(id);
+	}
 
 	public Long getExperimentTTL() {
 		return experimentTTL;

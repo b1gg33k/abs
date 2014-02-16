@@ -12,31 +12,15 @@ import java.util.Map;
  * Date: 2/12/14
  * Time: 11:57 PM
  */
-public class Persona implements Serializable {
+public class Persona extends BaseEntity implements IEntity {
 
-	private String id = null;
 	private List<String> experiments = new ArrayList<String>();
 	private Map<String,Serializable> variants = new HashMap<String,Serializable>();
 
-	private transient boolean changed = false;
-	private transient long expires = 0;
-
-	public Persona(String id) {
-		this.id = id;
-	}
 
 	public Persona(String id, ArrayList<String> experiments) {
-		this.id = id;
+		super(id);
 		this.experiments = experiments;
-	}
-
-	public String getId() {
-		return id;
-	}
-
-	public void setId(String id) {
-		changed = true;
-		this.id = id;
 	}
 
 	public List<String> getExperiments() {
@@ -68,11 +52,4 @@ public class Persona implements Serializable {
 		}
 	}
 
-	public long getExpires() {
-		return expires;
-	}
-
-	public void setExpires(long expires) {
-		this.expires = expires;
-	}
 }

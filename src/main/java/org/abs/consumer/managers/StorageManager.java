@@ -15,9 +15,7 @@ import java.util.Map;
  * Date: 2/13/14
  * Time: 2:35 AM
  */
-public class StorageManager {
-	static Logger log = Logger.getLogger(StorageManager.class.getName());
-
+public class StorageManager extends BaseManager {
 	private static StorageManager instance = new StorageManager();
 	private static ApplicationManager applicationManager;
 	JedisPool pool = null;
@@ -64,6 +62,7 @@ public class StorageManager {
 		for (String value : data){
 			pipeline.lpush(key, value);
 		}
+		pipeline.sync();
 	}
 
 	@Override

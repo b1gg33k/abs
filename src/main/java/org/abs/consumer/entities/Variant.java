@@ -12,27 +12,20 @@ import java.util.Map;
  * Date: 2/12/14
  * Time: 11:58 PM
  */
-public class Variant implements Serializable {
-	private String id = null;
+public class Variant extends BaseEntity implements IEntity {
 	private Serializable control = null;
 	private Map<String,Serializable> alternates = null;
 	private String strategy = null;
 
 	public Variant(String id) {
+		super(id);
 		alternates = new HashMap<String, Serializable>();
 	}
 
 	public Variant(String id, String control, Map<String, Serializable> alternates) {
+		super(id);
 		this.control = control;
 		this.alternates = alternates;
-	}
-
-	public String getId() {
-		return id;
-	}
-
-	public void setId(String id) {
-		this.id = id;
 	}
 
 	public Serializable getControl() {

@@ -11,7 +11,7 @@ import java.util.Map;
  * Date: 2/13/14
  * Time: 2:22 AM
  */
-public class ExperimentManager {
+public class ExperimentManager extends BaseManager {
 	private static ExperimentManager instance = new ExperimentManager();
 	private static Map<String,Experiment> experimentMap = new HashMap<String, Experiment>();
 	private long ttl = 300000L;

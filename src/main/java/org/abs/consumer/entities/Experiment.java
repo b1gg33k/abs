@@ -14,11 +14,12 @@ import java.util.Map;
  * Date: 2/13/14
  * Time: 12:00 AM
  */
-public class Experiment implements Serializable {
+public class Experiment extends BaseEntity implements IEntity {
 	private static final long serialVersionUID = -2883767302035068380L;
 	private List<Variant> variants = new ArrayList<Variant>();
 
-	public Experiment(List<Variant> variants, Class<IStrategy> strategy) {
+	public Experiment(String id, List<Variant> variants, Class<IStrategy> strategy) {
+		super(id);
 		this.variants = variants;
 	}
 

@@ -1,6 +1,7 @@
 package org.abs.consumer.managers;
 
 import org.abs.consumer.entities.Configuration;
+import org.apache.log4j.Logger;
 
 import java.net.UnknownHostException;
 
@@ -10,7 +11,7 @@ import java.net.UnknownHostException;
  * Date: 2/13/14
  * Time: 2:39 AM
  */
-public class ApplicationManager {
+public class ApplicationManager extends BaseManager {
 	private static ApplicationManager instance = null;
 	private String applicationName = null;
 	private String nameSpace = "org::abs";
@@ -18,11 +19,13 @@ public class ApplicationManager {
 	private Configuration configuration = null;
 
 	private ApplicationManager(String applicationName) {
+		super();
 		this.applicationName = applicationName;
 		loadConfiguration();
 	}
 
 	private ApplicationManager(String applicationName, String nameSpace) {
+		super();
 		this.applicationName = applicationName;
 		this.nameSpace = nameSpace;
 		loadConfiguration();
@@ -33,13 +36,18 @@ public class ApplicationManager {
 		try {
 			hostname = java.net.InetAddress.getLocalHost().getHostName();
 		} catch (UnknownHostException e) {
-			//TODO: Log it.
+			log.error("Error finding hostname, fallback to localhost: " + e.getLocalizedMessage());
+			log.debug("Stacktrace", e);
 		}
 		return hostname;
 	}
 
 	public static synchronized ApplicationManager getInstance() {
-		return getInstance("noname");
+		String applicationName = "noname";
+		if (null != properties){
+			applicationName = properties.getProperty("application.name",applicationName);
+		}
+		return getInstance(applicationName);
 	}
 
 	public static ApplicationManager getInstance(String applicationName) {
