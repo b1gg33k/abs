@@ -20,24 +20,4 @@ public class PersonaManager {
 		return instance;
 	}
 
-	public Persona getPersona(String personaId){
-		Persona persona = null;
-		if (personaCache.containsKey(personaId)){
-			persona = personaCache.get(personaId);
-		} else {
-			persona = loadPersona(personaId);
-		}
-		return persona;
-	}
-
-	private Persona loadPersona(String personaId){
-		//Load it from redis.
-		Persona persona = createPersona(personaId);
-		return persona;
-	}
-
-	private Persona createPersona(String personaId){
-
-	}
-
 }

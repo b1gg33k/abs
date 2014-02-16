@@ -13,7 +13,7 @@ import java.net.UnknownHostException;
 public class ApplicationManager {
 	private static ApplicationManager instance = null;
 	private String applicationName = null;
-	private String nameSpace = "org::abs::";
+	private String nameSpace = "org::abs";
 	private String localhostname;
 	private Configuration configuration = null;
 
@@ -38,11 +38,13 @@ public class ApplicationManager {
 		return hostname;
 	}
 
+	public static synchronized ApplicationManager getInstance() {
+		return getInstance("noname");
+	}
+
 	public static ApplicationManager getInstance(String applicationName) {
 		if (null == instance){
-			synchronized (instance){
-				instance = new ApplicationManager(applicationName);
-			}
+			instance = new ApplicationManager(applicationName);
 		}
 		return instance;
 	}
@@ -59,5 +61,21 @@ public class ApplicationManager {
 	private void loadConfiguration(){
 		String hostname = getHostname();
 
+	}
+
+	public String getNameSpace() {
+		return nameSpace;
+	}
+
+	public void setNameSpace(String nameSpace) {
+		this.nameSpace = nameSpace;
+	}
+
+	public String getApplicationName() {
+		return applicationName;
+	}
+
+	public void setApplicationName(String applicationName) {
+		this.applicationName = applicationName;
 	}
 }

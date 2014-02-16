@@ -1,6 +1,10 @@
 package org.abs.consumer.managers;
 
-import org.redisson.Redisson;
+import org.apache.log4j.Logger;
+import redis.clients.jedis.Jedis;
+import redis.clients.jedis.JedisPool;
+import redis.clients.jedis.JedisPoolConfig;
+import redis.clients.jedis.Pipeline;
 
 import java.util.List;
 import java.util.Map;
@@ -12,34 +16,57 @@ import java.util.Map;
  * Time: 2:35 AM
  */
 public class StorageManager {
+	static Logger log = Logger.getLogger(StorageManager.class.getName());
+
 	private static StorageManager instance = new StorageManager();
-	Redisson redisson = null;
+	private static ApplicationManager applicationManager;
+	JedisPool pool = null;
 
 	public static StorageManager getInstance() {
 		return instance;
 	}
 
 	public StorageManager() {
-		redisson = Redisson.create();
+		applicationManager = ApplicationManager.getInstance();
+		JedisPoolConfig poolConfig = new JedisPoolConfig();
+		//TODO: Read this from a prop file.
+		poolConfig.setMaxActive(5);
+		pool = new JedisPool(poolConfig, "localhost");
 	}
 
-	public Map<?,?> loadMap(String id){
-		return redisson.getMap(id);
+	public Map<String,String> loadMap(String id){
+		String key = applicationManager.getNameSpace()  + "::" + applicationManager.getApplicationName() + "::" + id;
+		Jedis jedis = pool.getResource();
+		return jedis.hgetAll(key);
 	}
 
-	public List<?> loadList(String id){
-		return redisson.getList(id);
+	public List<String> loadList(String id){
+		String key = applicationManager.getNameSpace()  + "::" + applicationManager.getApplicationName() + "::" + id;
+		Jedis jedis = pool.getResource();
+		return jedis.lrange(key, 1,-1);
 	}
 
-	public saveMap(String id, Map<?,?> data){
-		redisson.;
+	public void saveMap(String id, Map<String,String> data){
+		String key = applicationManager.getNameSpace()  + "::" + applicationManager.getApplicationName() + "::" + id;
+		log.debug("Saving to: " + key);
+		Jedis jedis = pool.getResource();
+		Pipeline pipeline = jedis.pipelined();
+		for (String dataKey : data.keySet()){
+			pipeline.hset(key,dataKey,data.get(dataKey));
+		}
+		pipeline.sync();
+	}
+
+	public void saveList(String id, List<String> data){
+		String key = applicationManager.getNameSpace()  + "::" + applicationManager.getApplicationName() + "::" + id;
+		Jedis jedis = pool.getResource();
+		Pipeline pipeline = jedis.pipelined();
+		for (String value : data){
+			pipeline.lpush(key, value);
+		}
 	}
 
 	@Override
 	protected void finalize() throws Throwable {
-		if (null != redisson){
-			redisson.shutdown();
-		}
-		super.finalize();
 	}
 }
