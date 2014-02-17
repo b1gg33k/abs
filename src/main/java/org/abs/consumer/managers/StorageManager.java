@@ -1,6 +1,5 @@
 package org.abs.consumer.managers;
 
-import org.apache.log4j.Logger;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
@@ -33,19 +32,19 @@ public class StorageManager extends BaseManager {
 	}
 
 	public Map<String,String> loadMap(String id){
-		String key = applicationManager.getNameSpace()  + "::" + applicationManager.getApplicationName() + "::" + id;
+		String key = applicationManager.getBaseNamespace()  + "::" + applicationManager.getApplicationName() + "::" + id;
 		Jedis jedis = pool.getResource();
 		return jedis.hgetAll(key);
 	}
 
 	public List<String> loadList(String id){
-		String key = applicationManager.getNameSpace()  + "::" + applicationManager.getApplicationName() + "::" + id;
+		String key = applicationManager.getBaseNamespace()  + "::" + applicationManager.getApplicationName() + "::" + id;
 		Jedis jedis = pool.getResource();
 		return jedis.lrange(key, 1,-1);
 	}
 
 	public void saveMap(String id, Map<String,String> data){
-		String key = applicationManager.getNameSpace()  + "::" + applicationManager.getApplicationName() + "::" + id;
+		String key = applicationManager.getBaseNamespace()  + "::" + applicationManager.getApplicationName() + "::" + id;
 		log.debug("Saving to: " + key);
 		Jedis jedis = pool.getResource();
 		Pipeline pipeline = jedis.pipelined();
@@ -56,7 +55,7 @@ public class StorageManager extends BaseManager {
 	}
 
 	public void saveList(String id, List<String> data){
-		String key = applicationManager.getNameSpace()  + "::" + applicationManager.getApplicationName() + "::" + id;
+		String key = applicationManager.getBaseNamespace()  + "::" + applicationManager.getApplicationName() + "::" + id;
 		Jedis jedis = pool.getResource();
 		Pipeline pipeline = jedis.pipelined();
 		for (String value : data){

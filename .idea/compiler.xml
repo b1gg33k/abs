@@ -27,6 +27,9 @@
         <module name="abs" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="abs" target="1.6" />
+    </bytecodeTargetLevel>
   </component>
 </project>
 

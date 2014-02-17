@@ -13,7 +13,7 @@ public class ApplicationManagerTest {
 	@Test
 	public void testGetNameSpace() throws Exception {
 		ApplicationManager applicationManager = ApplicationManager.getInstance();
-		Assert.assertNotNull(applicationManager.getNameSpace());
+		Assert.assertNotNull(applicationManager.getBaseNamespace());
 	}
 
 	@Test

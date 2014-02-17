@@ -1,10 +1,7 @@
 package org.abs.consumer.entities;
 
-import org.abs.consumer.distribution.IStrategy;
-
-import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -13,42 +10,46 @@ import java.util.Map;
  * Time: 11:58 PM
  */
 public class Variant extends BaseEntity implements IEntity {
-	private Serializable control = null;
-	private Map<String,Serializable> alternates = null;
-	private String strategy = null;
+	private List<Group> groups = null;
+
+	protected Variant(){
+
+	}
 
 	public Variant(String id) {
 		super(id);
-		alternates = new HashMap<String, Serializable>();
+		groups = new ArrayList<Group>();
 	}
 
-	public Variant(String id, String control, Map<String, Serializable> alternates) {
+	public Variant(String id, List<Group> groups) {
 		super(id);
-		this.control = control;
-		this.alternates = alternates;
+		this.groups = groups;
 	}
 
-	public Serializable getControl() {
-		return control;
+	public List<Group> getGroups() {
+		return groups;
 	}
 
-	public void setControl(Serializable control) {
-		this.control = control;
+	public void setGroups(List<Group> groups) {
+		this.groups = groups;
 	}
 
-	public Map<String, Serializable> getAlternates() {
-		return alternates;
+	public void addGroup(Group group){
+		if (null == groups){
+			groups = new ArrayList<Group>();
+		}
+		groups.add(group);
 	}
 
-	public void setAlternates(Map<String, Serializable> alternates) {
-		this.alternates = alternates;
+	public void clone(Variant other){
+		other.setId(this.getId());
+		other.setGroups(this.getGroups());
 	}
 
-	public String getStrategy() {
-		return strategy;
-	}
-
-	public void setStrategy(String strategy) {
-		this.strategy = strategy;
+	@Override
+	public Variant clone(){
+		Variant other = new Variant();
+		clone(other);
+		return other;
 	}
 }

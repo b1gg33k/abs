@@ -2,6 +2,7 @@ package org.abs.consumer.distribution;
 
 import org.abs.consumer.entities.Experiment;
 import org.abs.consumer.entities.Persona;
+import org.abs.consumer.entities.PersonaVariant;
 import org.abs.consumer.entities.Variant;
 
 import java.io.Serializable;

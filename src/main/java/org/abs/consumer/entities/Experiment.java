@@ -17,10 +17,20 @@ import java.util.Map;
 public class Experiment extends BaseEntity implements IEntity {
 	private static final long serialVersionUID = -2883767302035068380L;
 	private List<Variant> variants = new ArrayList<Variant>();
+	private List<Group> groups = new ArrayList<Group>();
+	private String strategy = null;
 
-	public Experiment(String id, List<Variant> variants, Class<IStrategy> strategy) {
+	public Experiment(String id, List<Group> groups, List<Variant> variants, String strategy) {
 		super(id);
 		this.variants = variants;
+		this.groups = groups;
+		this.strategy = strategy;
+	}
+
+	public Experiment(String id, List<Group> groups, List<Variant> variants) {
+		super(id);
+		this.variants = variants;
+		this.groups = groups;
 	}
 
 	public List<Variant> getVariants() {
@@ -35,5 +45,20 @@ public class Experiment extends BaseEntity implements IEntity {
 		}
 	}
 
+	public List<Group> getGroups() {
+		return groups;
+	}
+
+	public void setGroups(List<Group> groups) {
+		this.groups = groups;
+	}
+
+	public String getStrategy() {
+		return strategy;
+	}
+
+	public void setStrategy(String strategy) {
+		this.strategy = strategy;
+	}
 
 }

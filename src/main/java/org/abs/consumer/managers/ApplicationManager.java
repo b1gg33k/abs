@@ -1,7 +1,6 @@
 package org.abs.consumer.managers;
 
 import org.abs.consumer.entities.Configuration;
-import org.apache.log4j.Logger;
 
 import java.net.UnknownHostException;
 
@@ -13,21 +12,17 @@ import java.net.UnknownHostException;
  */
 public class ApplicationManager extends BaseManager {
 	private static ApplicationManager instance = null;
-	private String applicationName = null;
-	private String nameSpace = "org::abs";
+	private String applicationName = "noname";
+	private String baseNamespace = "org::abs";
 	private String localhostname;
 	private Configuration configuration = null;
 
-	private ApplicationManager(String applicationName) {
+	public ApplicationManager() {
 		super();
-		this.applicationName = applicationName;
-		loadConfiguration();
-	}
-
-	private ApplicationManager(String applicationName, String nameSpace) {
-		super();
-		this.applicationName = applicationName;
-		this.nameSpace = nameSpace;
+		if (null != properties){
+			applicationName = properties.getProperty("application.name",applicationName);
+			baseNamespace = properties.getProperty("baseNamespace","org::abs");
+		}
 		loadConfiguration();
 	}
 
@@ -43,25 +38,8 @@ public class ApplicationManager extends BaseManager {
 	}
 
 	public static synchronized ApplicationManager getInstance() {
-		String applicationName = "noname";
-		if (null != properties){
-			applicationName = properties.getProperty("application.name",applicationName);
-		}
-		return getInstance(applicationName);
-	}
-
-	public static ApplicationManager getInstance(String applicationName) {
 		if (null == instance){
-			instance = new ApplicationManager(applicationName);
-		}
-		return instance;
-	}
-
-	public static ApplicationManager getInstance(String applicationName, String nameSpace) {
-		if (null == instance){
-			synchronized (instance){
-				instance = new ApplicationManager(applicationName,nameSpace);
-			}
+			instance = new ApplicationManager();
 		}
 		return instance;
 	}
@@ -71,12 +49,12 @@ public class ApplicationManager extends BaseManager {
 
 	}
 
-	public String getNameSpace() {
-		return nameSpace;
+	public String getBaseNamespace() {
+		return baseNamespace;
 	}
 
-	public void setNameSpace(String nameSpace) {
-		this.nameSpace = nameSpace;
+	public void setBaseNamespace(String baseNamespace) {
+		this.baseNamespace = baseNamespace;
 	}
 
 	public String getApplicationName() {

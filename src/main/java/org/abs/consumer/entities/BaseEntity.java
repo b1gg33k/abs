@@ -19,7 +19,11 @@ public abstract class BaseEntity implements IEntity {
 	protected transient boolean changed = false;
 	protected transient long expires = 0;
 
-	protected BaseEntity(String id) {
+	protected BaseEntity(){
+
+	}
+
+	public BaseEntity(String id) {
 		this.id = id;
 	}
 
