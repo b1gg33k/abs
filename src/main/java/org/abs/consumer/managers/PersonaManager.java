@@ -34,7 +34,12 @@ public class PersonaManager extends BaseManager {
 		}
 	}
 
-//	public Persona loadPersona(String personaId){
-//		StorageManager.getInstance();
-//	}
+	public Persona loadPersona(String personaId){
+		Persona persona = StorageManager.getInstance().loadEntity(personaId,Persona.class);
+		if (null == persona){
+			persona = new Persona();
+		}
+
+		return persona;
+	}
 }

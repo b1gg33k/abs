@@ -18,6 +18,10 @@ public class Experiment extends BaseEntity implements IEntity {
 	public Experiment() {
 	}
 
+	public Experiment(String id) {
+		super(id);
+	}
+
 	public Experiment(String id, List<Group> groups, List<Variant> variants, String strategy) {
 		super(id);
 		this.variants = variants;

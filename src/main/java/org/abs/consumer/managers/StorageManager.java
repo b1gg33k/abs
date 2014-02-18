@@ -10,6 +10,8 @@ import redis.clients.jedis.JedisPoolConfig;
 import redis.clients.jedis.Pipeline;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -22,7 +24,7 @@ import java.util.Map;
 public class StorageManager extends BaseManager {
 	private static StorageManager instance = new StorageManager();
 	private static ApplicationManager applicationManager;
-	JedisPool pool = null;
+	private JedisPool pool = null;
 
 	public static StorageManager getInstance() {
 		return instance;
@@ -36,35 +38,78 @@ public class StorageManager extends BaseManager {
 		pool = new JedisPool(poolConfig, "localhost");
 	}
 
-	public Map<String,String> loadMap(String id){
-		String key = applicationManager.getBaseNamespace() + id;
+	public Map<String,IEntity> loadEntityMap(Class<? extends IEntity> entityClass){
+		String key = applicationManager.getBaseNamespace() + "::" + entityClass.getSimpleName().toLowerCase();
 		Jedis jedis = pool.getResource();
-		return jedis.hgetAll(key);
+		Map<String, String> redisMap = jedis.hgetAll(key);
+		Map<String, IEntity> entityMap = null;
+
+		if (null != redisMap){
+			entityMap = new HashMap<String, IEntity>();
+			for (String id : redisMap.keySet()){
+				String json = redisMap.get(id);
+				ObjectMapper mapper = new ObjectMapper();
+				mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+				try {
+					IEntity entity = mapper.readValue(json,entityClass);
+					entityMap.put(id,entity);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+
+		return entityMap;
 	}
 
-	public List<String> loadList(String id){
-		String key = applicationManager.getBaseNamespace() + id;
+	public List<IEntity> loadEntityList(Class<? extends IEntity> entityClass){
+		String key = applicationManager.getBaseNamespace() + "::" + entityClass.getSimpleName().toLowerCase();
 		Jedis jedis = pool.getResource();
-		return jedis.lrange(key, 1,-1);
+		List<String> redisList = jedis.lrange(key, 0,-1);
+		List<IEntity> entityList = null;
+		if (null != redisList){
+			entityList = new ArrayList<IEntity>();
+			for (String json : redisList){
+				ObjectMapper mapper = new ObjectMapper();
+				try {
+					IEntity entity = mapper.readValue(json,entityClass);
+					if (null != entity) entityList.add(entity);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+
+		return entityList;
 	}
 
-	public void saveMap(String id, Map<String,String> data){
-		String key = applicationManager.getBaseNamespace() + id;
+	public void saveMap(Class entityClass, Map<String,? extends IEntity> data){
+		String key = applicationManager.getBaseNamespace() + "::" + entityClass.getSimpleName().toLowerCase();
 		log.debug("Saving to: " + key);
 		Jedis jedis = pool.getResource();
 		Pipeline pipeline = jedis.pipelined();
 		for (String dataKey : data.keySet()){
-			pipeline.hset(key,dataKey,data.get(dataKey));
+			IEntity entity = data.get(dataKey);
+
+			try {
+				pipeline.hset(key,dataKey,entity.toJson());
+			} catch (JsonProcessingException e) {
+				log.error(e.getLocalizedMessage(), e);
+			}
 		}
 		pipeline.sync();
 	}
 
-	public void saveList(String id, List<String> data){
-		String key = applicationManager.getBaseNamespace()  + "::"  + id;
+	public void saveEntityList(Class entityClass, List<? extends IEntity> data){
+		String key = applicationManager.getBaseNamespace()  + "::"  + entityClass.getSimpleName().toLowerCase();
 		Jedis jedis = pool.getResource();
 		Pipeline pipeline = jedis.pipelined();
-		for (String value : data){
-			pipeline.lpush(key, value);
+		for (IEntity value : data){
+			try {
+				pipeline.lpush(key, value.toJson());
+			} catch (JsonProcessingException e) {
+				log.error(e.getLocalizedMessage(),e);
+			}
 		}
 		pipeline.sync();
 	}
@@ -110,5 +155,9 @@ public class StorageManager extends BaseManager {
 
 	@Override
 	protected void finalize() throws Throwable {
+	}
+
+	public JedisPool getPool() {
+		return pool;
 	}
 }

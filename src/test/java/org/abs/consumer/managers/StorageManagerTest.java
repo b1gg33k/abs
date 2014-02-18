@@ -1,11 +1,10 @@
 package org.abs.consumer.managers;
 
 import junit.framework.Assert;
-import org.abs.consumer.entities.Experiment;
-import org.abs.consumer.entities.Group;
-import org.abs.consumer.entities.Variant;
+import org.abs.consumer.entities.*;
+import org.junit.Before;
 import org.junit.Test;
-import org.junit.runners.Parameterized;
+import redis.clients.jedis.Jedis;
 
 import java.util.*;
 
@@ -16,39 +15,52 @@ import java.util.*;
  * Time: 1:27 PM
  */
 public class StorageManagerTest {
+	@Before
+	public void setUp() throws Exception {
+		Jedis jedis = StorageManager.getInstance().getPool().getResource();
+		jedis.flushAll();
+	}
 
 	@Test
 	public void testSaveMap() throws Exception {
-		Map<String,String> testMap = new HashMap<String, String>();
-		testMap.put("1", "one");
-		testMap.put("2", "two");
-		testMap.put("3", "three");
-		testMap.put("4", "four");
+		Map<String,IEntity> testMap = new HashMap<String, IEntity>();
+		testMap.put("1", new Group("one"));
+		testMap.put("2", new Experiment("two"));
+		testMap.put("3", new Persona("three"));
+		testMap.put("4", new Variant("four"));
 
 		StorageManager storageManager = StorageManager.getInstance();
-		storageManager.saveMap("testSaveMap", testMap);
-		Map<String,String> resultsMap = storageManager.loadMap("testSaveMap");
+		storageManager.saveMap(TestEntity.class, testMap);
+		Map<String,IEntity> resultsMap = storageManager.loadEntityMap(TestEntity.class);
 
 		for (String key : testMap.keySet()){
 			Assert.assertTrue(resultsMap.containsKey(key));
-			Assert.assertEquals(testMap.get(key),resultsMap.get(key));
+			Assert.assertEquals(testMap.get(key).getId(),resultsMap.get(key).getId());
 		}
 
 	}
 
 	@Test
 	public void testSaveList() throws Exception {
-		List<String> testList = new ArrayList<String>();
-		testList.add("One");
-		testList.add("two");
-		testList.add("three");
-		testList.add("four");
+		List<IEntity> testList = new ArrayList<IEntity>();
+		testList.add(new TestEntity("One"));
+		testList.add(new TestEntity("two"));
+		testList.add(new TestEntity("three"));
+		testList.add(new TestEntity("four"));
 
 		StorageManager storageManager = StorageManager.getInstance();
-		storageManager.saveList("testSaveList",testList);
-		List<String> resultsList = storageManager.loadList("testSaveList");
+		storageManager.saveEntityList(TestEntity.class, testList);
+		List<IEntity> resultsList = storageManager.loadEntityList(TestEntity.class);
+		Map<String,IEntity> resultsMap = new HashMap<String, IEntity>();
+		for (IEntity entity : resultsList){
+			resultsMap.put(entity.getId(), entity);
+		}
 
-		Assert.assertTrue(resultsList.containsAll(testList));
+		for (IEntity testEntity : testList){
+			IEntity entity = resultsMap.get(testEntity.getId());
+			Assert.assertNotNull(testEntity.getId()+ " is null",entity);
+			Assert.assertEquals(testEntity.getId(),entity.getId());
+		}
 	}
 
 	@Test
@@ -80,6 +92,6 @@ public class StorageManagerTest {
 		Assert.assertEquals("groupA",resultExperiment.getVariants().get(0).getGroups().get(0).getId());
 		Assert.assertEquals("groupB",resultExperiment.getVariants().get(0).getGroups().get(1).getId());
 		Assert.assertEquals("groupA",resultExperiment.getVariants().get(1).getGroups().get(0).getId());
-		Assert.assertEquals("groupB",resultExperiment.getVariants().get(1).getGroups().get(1).getId());
+		Assert.assertEquals("groupB", resultExperiment.getVariants().get(1).getGroups().get(1).getId());
 	}
 }
