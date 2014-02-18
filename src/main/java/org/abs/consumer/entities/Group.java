@@ -1,7 +1,5 @@
 package org.abs.consumer.entities;
 
-import java.io.Serializable;
-
 /**
  * Created by IntelliJ IDEA.
  * User: dale
@@ -9,6 +7,8 @@ import java.io.Serializable;
  * Time: 5:10 PM
  */
 public class Group extends BaseEntity {
+	public Group() {
+	}
 
 	public Group(String id) {
 		super(id);

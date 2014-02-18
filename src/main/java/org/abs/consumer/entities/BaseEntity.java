@@ -1,9 +1,9 @@
 package org.abs.consumer.entities;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.log4j.Logger;
-import org.json.JSONObject;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 /**
@@ -19,7 +19,7 @@ public abstract class BaseEntity implements IEntity {
 	protected transient boolean changed = false;
 	protected transient long expires = 0;
 
-	protected BaseEntity(){
+	public BaseEntity(){
 
 	}
 
@@ -35,9 +35,11 @@ public abstract class BaseEntity implements IEntity {
 		changed = true;
 		this.id = id;
 	}
+
 	@Override
-	public String toJson() {
-		return new JSONObject(this).toString();
+	public String toJson() throws JsonProcessingException {
+		ObjectMapper mapper = new ObjectMapper();
+		return mapper.writeValueAsString(this);
 	}
 
 	public long getExpires() {

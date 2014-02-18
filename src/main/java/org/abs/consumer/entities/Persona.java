@@ -12,10 +12,11 @@ import java.util.Map;
  * Time: 11:57 PM
  */
 public class Persona extends BaseEntity implements IEntity {
-
 	private List<Experiment> experiments = null;
 	private Map<String, PersonaVariant> variants = null;
 
+	public Persona() {
+	}
 
 	public Persona(String id) {
 		super(id);

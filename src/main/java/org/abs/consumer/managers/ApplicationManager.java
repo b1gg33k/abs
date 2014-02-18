@@ -14,7 +14,6 @@ public class ApplicationManager extends BaseManager {
 	private static ApplicationManager instance = null;
 	private String applicationName = "noname";
 	private String baseNamespace = "org::abs";
-	private String localhostname;
 	private Configuration configuration = null;
 
 	public ApplicationManager() {

@@ -1,12 +1,7 @@
 package org.abs.consumer.entities;
 
-import org.abs.consumer.distribution.IStrategy;
-
-import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.
@@ -19,6 +14,9 @@ public class Experiment extends BaseEntity implements IEntity {
 	private List<Variant> variants = new ArrayList<Variant>();
 	private List<Group> groups = new ArrayList<Group>();
 	private String strategy = null;
+
+	public Experiment() {
+	}
 
 	public Experiment(String id, List<Group> groups, List<Variant> variants, String strategy) {
 		super(id);

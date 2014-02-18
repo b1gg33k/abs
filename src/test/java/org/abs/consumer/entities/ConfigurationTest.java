@@ -13,7 +13,7 @@ import org.junit.Test;
 public class ConfigurationTest {
 	static Logger log = Logger.getLogger(ConfigurationTest.class.getName());
 	@Test
-	public void test(){
+	public void test() throws Exception {
 		Configuration configuration = new Configuration("test");
 		configuration.setExperimentTTL(3600L);
 		configuration.setPersonaTTL(3600L);

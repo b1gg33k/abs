@@ -33,4 +33,8 @@ public class PersonaManager extends BaseManager {
 			strategy.assign(variant, persona);
 		}
 	}
+
+//	public Persona loadPersona(String personaId){
+//		StorageManager.getInstance();
+//	}
 }

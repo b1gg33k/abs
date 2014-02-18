@@ -1,6 +1,5 @@
 package org.abs.consumer.entities;
 
-import java.io.Serializable;
 import java.util.Map;
 
 /**
@@ -13,6 +12,9 @@ public class Configuration extends BaseEntity implements IEntity {
 	private Long experimentTTL = null;
 	private Long PersonaTTL = null;
 	private Map<String,Configuration> hostConfigurations = null;
+
+	public Configuration() {
+	}
 
 	protected Configuration(String id) {
 		super(id);

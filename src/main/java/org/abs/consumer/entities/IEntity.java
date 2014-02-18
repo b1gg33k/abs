@@ -1,5 +1,7 @@
 package org.abs.consumer.entities;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+
 import java.io.Serializable;
 
 /**
@@ -14,5 +16,5 @@ public interface IEntity extends Serializable {
 
 	public void setId(String id);
 
-	public String toJson();
+	public String toJson() throws JsonProcessingException;
 }
