@@ -94,7 +94,7 @@ public class StorageManager extends BaseManager {
 		return entityList;
 	}
 
-	public <T extends IEntity> void saveMap(Map<String,T> data){
+	public <T extends IEntity> void saveEntityMap(Map<String, T> data){
 		if (null == data || data.size()==0) return;
 		Jedis jedis = pool.getResource();
 		jedis.select(databaseIndex);

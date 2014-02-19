@@ -14,10 +14,11 @@ import org.abs.consumer.entities.Variant;
 
 /* The base always choose the first group. */
 public class BaseStrategy implements IStrategy {
-	public void assign(Variant variant, Persona persona) {
+	public Group assign(Variant variant, Persona persona) {
 		Group activeGroup = (null != variant.getGroups() && variant.getGroups().size()>0) ? variant.getGroups().get(0) : null;
 		PersonaVariant personaVariant = new PersonaVariant(variant, activeGroup);
 		persona.addVariant(personaVariant);
+		return activeGroup;
 	}
 
 	public IStrategy getInstance() {

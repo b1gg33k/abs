@@ -38,8 +38,18 @@ public abstract class BaseEntity implements IEntity {
 
 	@Override
 	public String toJson() throws JsonProcessingException {
+		return this.toJson(false);
+	}
+
+	public String toJson(boolean pretty) throws JsonProcessingException {
 		ObjectMapper mapper = new ObjectMapper();
-		return mapper.writeValueAsString(this);
+		String result = null;
+		if (pretty){
+			result = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(this);
+		} else {
+			result = mapper.writeValueAsString(this);
+		}
+		return result;
 	}
 
 	public long getExpires() {

@@ -31,7 +31,7 @@ public class StorageManagerTest {
 		testMap.put("4", new TestEntity("four"));
 
 		StorageManager storageManager = StorageManager.getInstance();
-		storageManager.saveMap(testMap);
+		storageManager.saveEntityMap(testMap);
 		Map<String,TestEntity> resultsMap = storageManager.loadEntityMap(TestEntity.class);
 
 		for (String key : testMap.keySet()){
@@ -81,6 +81,7 @@ public class StorageManagerTest {
 		variants.add(variant2);
 
 		Experiment experiment = new Experiment("testExperiment", groups, variants);
+		experiment.setStrategy("Even");
 
 		StorageManager.getInstance().saveEntity(experiment);
 		Experiment resultExperiment = StorageManager.getInstance().loadEntity(experiment.getId(),Experiment.class);

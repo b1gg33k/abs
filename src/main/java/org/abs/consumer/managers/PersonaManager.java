@@ -2,9 +2,7 @@ package org.abs.consumer.managers;
 
 import org.abs.consumer.distribution.IStrategy;
 import org.abs.consumer.distribution.StrategyFactory;
-import org.abs.consumer.entities.Experiment;
-import org.abs.consumer.entities.Persona;
-import org.abs.consumer.entities.Variant;
+import org.abs.consumer.entities.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
@@ -34,8 +32,14 @@ public class PersonaManager extends BaseManager {
 		IStrategy strategy = strategyFactory.getStrategy(experiment.getStrategy());
 		persona.addExperiment(experiment);
 
+		Group activeGroup = null;
 		for (Variant variant : experiment.getVariants()) {
-			strategy.assign(variant, persona);
+			if (null == activeGroup){
+				activeGroup = strategy.assign(variant, persona);
+			} else {
+				PersonaVariant personaVariant = new PersonaVariant(variant,activeGroup);
+				persona.addVariant(personaVariant);
+			}
 		}
 	}
 	public void addExperiments(Persona persona, List<Experiment> experiments) {

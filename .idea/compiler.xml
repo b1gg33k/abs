@@ -25,6 +25,7 @@
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="true" />
         <module name="abs" />
+        <module name="sample" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>

@@ -19,7 +19,7 @@ public class StrategyFactory {
 	Map<String, IStrategy> strategies = new HashMap<String, IStrategy>();
 
 	private StrategyFactory() {
-		strategies.put("Percentage", new PercentageStrategy());
+		strategies.put("Even", new EvenStrategy());
 	}
 
 	public static StrategyFactory getInstance() {

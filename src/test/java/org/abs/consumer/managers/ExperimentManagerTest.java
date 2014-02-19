@@ -5,11 +5,14 @@ import org.abs.consumer.entities.Experiment;
 import org.abs.consumer.entities.Group;
 import org.abs.consumer.entities.Variant;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import redis.clients.jedis.Jedis;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.
@@ -33,7 +36,8 @@ public class ExperimentManagerTest extends Assert {
 	}
 
 	private List<Experiment> generateExperiments(int count){
-		List<Experiment> experiments = new ArrayList<Experiment>();
+		Map<String,Experiment> experiments = new HashMap<String, Experiment>();
+		List<Experiment> experimentList = new ArrayList<Experiment>();
 		for (int X = count; X>=0; X--){
 			List<Group> groups = new ArrayList<Group>();
 			groups.add(new Group("groupA" + X));
@@ -49,9 +53,10 @@ public class ExperimentManagerTest extends Assert {
 			variants.add(variant2);
 
 			Experiment experiment = new Experiment("testExperiment" + X, groups, variants);
-			experiments.add(experiment);
+			experimentList.add(experiment);
+			experiments.put(experiment.getId(),experiment);
 		}
-		StorageManager.getInstance().saveEntityList(experiments);
-		return experiments;
+		StorageManager.getInstance().saveEntityMap(experiments);
+		return experimentList;
 	}
 }

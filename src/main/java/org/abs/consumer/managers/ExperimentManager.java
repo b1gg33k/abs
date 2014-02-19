@@ -1,10 +1,9 @@
 package org.abs.consumer.managers;
 
+import org.abs.consumer.distribution.StrategyFactory;
 import org.abs.consumer.entities.Experiment;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -32,7 +31,14 @@ public class ExperimentManager extends BaseManager {
 	private void loadExperiments(){
 		long now = System.currentTimeMillis();
 		if (expires < now){
-			experimentList = StorageManager.getInstance().loadEntityList(Experiment.class);
+			Map<String,Experiment> experimentMap = StorageManager.getInstance().loadEntityMap(Experiment.class);
+			List<Experiment> newExperimentList = new ArrayList<Experiment>();
+			for (String key : experimentMap.keySet()){
+				newExperimentList.add(experimentMap.get(key));
+			}
+			synchronized (experimentList){
+				experimentList = newExperimentList;
+			}
 			expires = now + ttl;
 			for (Experiment experiment : experimentList){
 				experiment.setExpires(expires);
