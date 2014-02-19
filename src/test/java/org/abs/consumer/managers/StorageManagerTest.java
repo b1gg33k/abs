@@ -37,6 +37,7 @@ public class StorageManagerTest {
 			Assert.assertTrue(resultsMap.containsKey(key));
 			Assert.assertEquals(testMap.get(key).getId(),resultsMap.get(key).getId());
 		}
+		Assert.assertNotNull("john");
 
 	}
 

@@ -66,6 +66,7 @@ public class StorageManager extends BaseManager {
 		String key = applicationManager.getBaseNamespace() + "::" + entityClass.getSimpleName().toLowerCase();
 		Jedis jedis = pool.getResource();
 		List<String> redisList = jedis.lrange(key, 0,-1);
+		pool.returnResource(jedis);
 		List<T> entityList = null;
 		if (null != redisList){
 			entityList = new ArrayList<T>();
@@ -98,6 +99,7 @@ public class StorageManager extends BaseManager {
 			}
 		}
 		pipeline.sync();
+		pool.returnResource(jedis);
 	}
 
 	public void saveEntityList(Class entityClass, List<? extends IEntity> data){
@@ -112,6 +114,7 @@ public class StorageManager extends BaseManager {
 			}
 		}
 		pipeline.sync();
+		pool.returnResource(jedis);
 	}
 
 	public void saveEntity(IEntity entity){
@@ -122,7 +125,6 @@ public class StorageManager extends BaseManager {
 	public void saveEntity(IEntity entity, boolean asynchronous){
 		//TODO: Make this asynchronous
 		String key = applicationManager.getBaseNamespace()  + "::" + entity.getClass().getSimpleName().toLowerCase();
-		Jedis jedis = pool.getResource();
 		String json = null;
 		try {
 			json = entity.toJson();
@@ -130,7 +132,9 @@ public class StorageManager extends BaseManager {
 			log.error(e.getLocalizedMessage(), e);
 		}
 		if (null != json){
+			Jedis jedis = pool.getResource();
 			jedis.hset(key,entity.getId(), json);
+			pool.returnResource(jedis);
 		}
 	}
 
@@ -140,6 +144,7 @@ public class StorageManager extends BaseManager {
 
 		Jedis jedis = pool.getResource();
 		String json = jedis.hget(key,entityId);
+		pool.returnResource(jedis);
 		if (null != json){
 			ObjectMapper mapper = new ObjectMapper();
 			mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
@@ -155,6 +160,8 @@ public class StorageManager extends BaseManager {
 
 	@Override
 	protected void finalize() throws Throwable {
+		pool.destroy();
+		pool = null;
 	}
 
 	public JedisPool getPool() {
