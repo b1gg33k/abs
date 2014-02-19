@@ -6,6 +6,7 @@ import org.abs.consumer.entities.Experiment;
 import org.abs.consumer.entities.Persona;
 import org.abs.consumer.entities.Variant;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -37,9 +38,13 @@ public class PersonaManager extends BaseManager {
 	public Persona loadPersona(String personaId){
 		Persona persona = StorageManager.getInstance().loadEntity(personaId,Persona.class);
 		if (null == persona){
-			persona = new Persona();
+			persona = new Persona(personaId);
 		}
 
 		return persona;
+	}
+
+	public void savePersona(Persona persona){
+		StorageManager.getInstance().saveEntity(persona);
 	}
 }

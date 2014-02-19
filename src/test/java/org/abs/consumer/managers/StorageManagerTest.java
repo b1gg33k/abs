@@ -31,7 +31,7 @@ public class StorageManagerTest {
 
 		StorageManager storageManager = StorageManager.getInstance();
 		storageManager.saveMap(TestEntity.class, testMap);
-		Map<String,IEntity> resultsMap = storageManager.loadEntityMap(TestEntity.class);
+		Map<String,TestEntity> resultsMap = storageManager.loadEntityMap(TestEntity.class);
 
 		for (String key : testMap.keySet()){
 			Assert.assertTrue(resultsMap.containsKey(key));
@@ -50,7 +50,7 @@ public class StorageManagerTest {
 
 		StorageManager storageManager = StorageManager.getInstance();
 		storageManager.saveEntityList(TestEntity.class, testList);
-		List<IEntity> resultsList = storageManager.loadEntityList(TestEntity.class);
+		List<TestEntity> resultsList = storageManager.loadEntityList(TestEntity.class);
 		Map<String,IEntity> resultsMap = new HashMap<String, IEntity>();
 		for (IEntity entity : resultsList){
 			resultsMap.put(entity.getId(), entity);

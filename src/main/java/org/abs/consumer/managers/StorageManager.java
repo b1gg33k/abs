@@ -38,20 +38,20 @@ public class StorageManager extends BaseManager {
 		pool = new JedisPool(poolConfig, "localhost");
 	}
 
-	public Map<String,IEntity> loadEntityMap(Class<? extends IEntity> entityClass){
+	public <T extends IEntity> Map<String,T> loadEntityMap(Class<T> entityClass){
 		String key = applicationManager.getBaseNamespace() + "::" + entityClass.getSimpleName().toLowerCase();
 		Jedis jedis = pool.getResource();
 		Map<String, String> redisMap = jedis.hgetAll(key);
-		Map<String, IEntity> entityMap = null;
+		Map<String, T> entityMap = null;
 
 		if (null != redisMap){
-			entityMap = new HashMap<String, IEntity>();
+			entityMap = new HashMap<String, T>();
 			for (String id : redisMap.keySet()){
 				String json = redisMap.get(id);
 				ObjectMapper mapper = new ObjectMapper();
 				mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
 				try {
-					IEntity entity = mapper.readValue(json,entityClass);
+					T entity = mapper.readValue(json,entityClass);
 					entityMap.put(id,entity);
 				} catch (IOException e) {
 					e.printStackTrace();
@@ -62,17 +62,17 @@ public class StorageManager extends BaseManager {
 		return entityMap;
 	}
 
-	public List<IEntity> loadEntityList(Class<? extends IEntity> entityClass){
+	public <T extends IEntity> List<T> loadEntityList(Class<T> entityClass){
 		String key = applicationManager.getBaseNamespace() + "::" + entityClass.getSimpleName().toLowerCase();
 		Jedis jedis = pool.getResource();
 		List<String> redisList = jedis.lrange(key, 0,-1);
-		List<IEntity> entityList = null;
+		List<T> entityList = null;
 		if (null != redisList){
-			entityList = new ArrayList<IEntity>();
+			entityList = new ArrayList<T>();
 			for (String json : redisList){
 				ObjectMapper mapper = new ObjectMapper();
 				try {
-					IEntity entity = mapper.readValue(json,entityClass);
+					T entity = mapper.readValue(json,entityClass);
 					if (null != entity) entityList.add(entity);
 				} catch (IOException e) {
 					e.printStackTrace();

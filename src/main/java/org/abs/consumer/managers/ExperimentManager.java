@@ -3,6 +3,7 @@ package org.abs.consumer.managers;
 import org.abs.consumer.entities.Experiment;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -25,7 +26,7 @@ public class ExperimentManager extends BaseManager {
 	}
 
 	private void loadExperiments(){
-		//TODO: Load from redis.
+		List<Experiment> experimentList = StorageManager.getInstance().loadEntityList(Experiment.class);
 	}
 
 	public long getTtl() {

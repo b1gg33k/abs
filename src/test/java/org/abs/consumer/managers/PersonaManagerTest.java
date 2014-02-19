@@ -43,4 +43,10 @@ public class PersonaManagerTest {
 		Assert.assertTrue("Persona does not have the inactive group on variant2.", persona.getVariant("variant2").getGroups().contains(groups.get(0)));
 
 	}
+
+	@Test
+	public void testSaveLoadPersona() throws Exception {
+		Persona persona = new Persona();
+
+	}
 }
