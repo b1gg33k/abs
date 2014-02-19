@@ -18,19 +18,20 @@ public class StorageManagerTest {
 	@Before
 	public void setUp() throws Exception {
 		Jedis jedis = StorageManager.getInstance().getPool().getResource();
-		jedis.flushAll();
+		jedis.flushDB();
+		StorageManager.getInstance().getPool().returnResource(jedis);
 	}
 
 	@Test
 	public void testSaveMap() throws Exception {
 		Map<String,IEntity> testMap = new HashMap<String, IEntity>();
-		testMap.put("1", new Group("one"));
-		testMap.put("2", new Experiment("two"));
-		testMap.put("3", new Persona("three"));
-		testMap.put("4", new Variant("four"));
+		testMap.put("1", new TestEntity("one"));
+		testMap.put("2", new TestEntity("two"));
+		testMap.put("3", new TestEntity("three"));
+		testMap.put("4", new TestEntity("four"));
 
 		StorageManager storageManager = StorageManager.getInstance();
-		storageManager.saveMap(TestEntity.class, testMap);
+		storageManager.saveMap(testMap);
 		Map<String,TestEntity> resultsMap = storageManager.loadEntityMap(TestEntity.class);
 
 		for (String key : testMap.keySet()){
@@ -50,7 +51,7 @@ public class StorageManagerTest {
 		testList.add(new TestEntity("four"));
 
 		StorageManager storageManager = StorageManager.getInstance();
-		storageManager.saveEntityList(TestEntity.class, testList);
+		storageManager.saveEntityList(testList);
 		List<TestEntity> resultsList = storageManager.loadEntityList(TestEntity.class);
 		Map<String,IEntity> resultsMap = new HashMap<String, IEntity>();
 		for (IEntity entity : resultsList){
