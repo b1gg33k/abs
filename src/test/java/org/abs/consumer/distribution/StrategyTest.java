@@ -21,14 +21,14 @@ public class StrategyTest {
 
 	@Test
 	public void testAssign() throws Exception {
-		BaseStrategy baseStrategy = new BaseStrategy();
+		EvenStrategy EvenStrategy = new EvenStrategy();
 		Variant variant = new Variant("testVarient");
 		variant.addGroup(new Group("GroupA"));
 		variant.addGroup(new Group("GroupB"));
 
 		Persona persona = new Persona("testUser");
-		baseStrategy.assign(variant,persona);
-		log.debug("Persona: " + persona.getId() + " = " + persona.getVariant("testVarient"));
-		Assert.assertEquals("GroupA", persona.getVariant("testVarient").getActiveGroup().getId());
+		EvenStrategy.assign(variant,persona);
+		log.debug("Persona: " + persona.getId() + " = " + persona.getVariant("testVarient").toJson());
+		Assert.assertNotNull(persona.getVariant("testVarient").getActiveGroup());
 	}
 }

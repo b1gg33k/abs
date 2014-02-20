@@ -18,6 +18,14 @@ public class ExperimentManager extends BaseManager {
 	private long expires = 0;
 
 	private ExperimentManager() {
+		super();
+		String ttlString = null;
+		if (null != properties){
+			ttlString = properties.getProperty("experiment.manager.ttl");
+		}
+		if (null != ttlString){
+			ttl = Long.parseLong(ttlString);
+		}
 		loadExperiments();
 	}
 
@@ -43,11 +51,17 @@ public class ExperimentManager extends BaseManager {
 			for (Experiment experiment : experimentList){
 				experiment.setExpires(expires);
 			}
-			log.info("Reloaded all experiments. " + experimentList.size());
+			log.info(now + "+" + ttl + " Reloaded all experiments. [" + experimentList.size() + "] expires " + expires);
+		} else {
+			log.info(now + "+" + ttl + " Reloaded NO experiments. [" + experimentList.size() + "] expires " + expires);
+
 		}
 	}
 
 	public List<Experiment> getExperiments(){
+		loadExperiments();
 		return experimentList;
 	}
+
+
 }

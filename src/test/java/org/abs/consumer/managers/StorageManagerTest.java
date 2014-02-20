@@ -43,33 +43,10 @@ public class StorageManagerTest {
 	}
 
 	@Test
-	public void testSaveList() throws Exception {
-		List<IEntity> testList = new ArrayList<IEntity>();
-		testList.add(new TestEntity("One"));
-		testList.add(new TestEntity("two"));
-		testList.add(new TestEntity("three"));
-		testList.add(new TestEntity("four"));
-
-		StorageManager storageManager = StorageManager.getInstance();
-		storageManager.saveEntityList(testList);
-		List<TestEntity> resultsList = storageManager.loadEntityList(TestEntity.class);
-		Map<String,IEntity> resultsMap = new HashMap<String, IEntity>();
-		for (IEntity entity : resultsList){
-			resultsMap.put(entity.getId(), entity);
-		}
-
-		for (IEntity testEntity : testList){
-			IEntity entity = resultsMap.get(testEntity.getId());
-			Assert.assertNotNull(testEntity.getId()+ " is null",entity);
-			Assert.assertEquals(testEntity.getId(),entity.getId());
-		}
-	}
-
-	@Test
 	public void testSaveLoadEntity() throws Exception {
-		List<Group> groups = new ArrayList<Group>();
-		groups.add(new Group("groupA"));
-		groups.add(new Group("groupB"));
+		Map<String,Group> groups = new HashMap<String, Group>();
+		groups.put("groupA",new Group("groupA"));
+		groups.put("groupB",new Group("groupB"));
 
 		List<Variant> variants = new ArrayList<Variant>();
 		Variant variant1 = new Variant("variant1");
@@ -87,14 +64,14 @@ public class StorageManagerTest {
 		Experiment resultExperiment = StorageManager.getInstance().loadEntity(experiment.getId(),Experiment.class);
 
 		Assert.assertNotNull(resultExperiment);
-		Assert.assertEquals("groupA", resultExperiment.getGroups().get(0).getId());
-		Assert.assertEquals("groupB", resultExperiment.getGroups().get(1).getId());
+		Assert.assertNotNull(resultExperiment.getGroups().get("groupA"));
+		Assert.assertNotNull(resultExperiment.getGroups().get("groupB"));
 		Assert.assertEquals("variant1", resultExperiment.getVariants().get(0).getId());
 		Assert.assertEquals("variant2", resultExperiment.getVariants().get(1).getId());
 
-		Assert.assertEquals("groupA",resultExperiment.getVariants().get(0).getGroups().get(0).getId());
-		Assert.assertEquals("groupB",resultExperiment.getVariants().get(0).getGroups().get(1).getId());
-		Assert.assertEquals("groupA",resultExperiment.getVariants().get(1).getGroups().get(0).getId());
-		Assert.assertEquals("groupB", resultExperiment.getVariants().get(1).getGroups().get(1).getId());
+		Assert.assertNotNull(resultExperiment.getVariants().get(0).getGroups().get("groupA"));
+		Assert.assertNotNull(resultExperiment.getVariants().get(0).getGroups().get("groupB"));
+		Assert.assertNotNull(resultExperiment.getVariants().get(1).getGroups().get("groupA"));
+		Assert.assertNotNull(resultExperiment.getVariants().get(1).getGroups().get("groupB"));
 	}
 }

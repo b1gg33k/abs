@@ -32,16 +32,28 @@ public class ExperimentManagerTest extends Assert {
 	public void testGetExperiments() throws Exception {
 		List<Experiment> expected = generateExperiments(5);
 		List<Experiment> actual = ExperimentManager.getInstance().getExperiments();
-		assertEquals(expected.size(),actual.size());
+
+		for (Experiment experiment : expected){
+			String meh = "\n";
+			boolean found = false;
+			for (Experiment experiment1 : actual){
+				meh += experiment1.toJson() + "||||||||||||" + actual.size();
+				if (experiment.getId().equals(experiment1.getId())){
+					found = true;
+					continue;
+				}
+			}
+			assertTrue("Experiment " + experiment.getId() + " Was not found. " + meh, found);
+		}
 	}
 
 	private List<Experiment> generateExperiments(int count){
 		Map<String,Experiment> experiments = new HashMap<String, Experiment>();
 		List<Experiment> experimentList = new ArrayList<Experiment>();
 		for (int X = count; X>=0; X--){
-			List<Group> groups = new ArrayList<Group>();
-			groups.add(new Group("groupA" + X));
-			groups.add(new Group("groupB" + X));
+			Map<String,Group> groups = new HashMap<String,Group>();
+			groups.put("groupA" + X,new Group("groupA" + X));
+			groups.put("groupB" + X, new Group("groupB" + X));
 
 			List<Variant> variants = new ArrayList<Variant>();
 			Variant variant1 = new Variant("variant1" + X);

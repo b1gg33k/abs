@@ -1,7 +1,9 @@
 package org.abs.consumer.entities;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.
@@ -10,7 +12,7 @@ import java.util.List;
  * Time: 11:58 PM
  */
 public class Variant extends BaseEntity implements IEntity {
-	private List<Group> groups = null;
+	private Map<String,Group> groups = null;
 
 	protected Variant(){
 
@@ -18,27 +20,27 @@ public class Variant extends BaseEntity implements IEntity {
 
 	public Variant(String id) {
 		super(id);
-		groups = new ArrayList<Group>();
+		groups = new HashMap<String,Group>();
 	}
 
-	public Variant(String id, List<Group> groups) {
+	public Variant(String id, Map<String,Group> groups) {
 		super(id);
 		this.groups = groups;
 	}
 
-	public List<Group> getGroups() {
+	public Map<String,Group> getGroups() {
 		return groups;
 	}
 
-	public void setGroups(List<Group> groups) {
+	public void setGroups(Map<String,Group> groups) {
 		this.groups = groups;
 	}
 
 	public void addGroup(Group group){
 		if (null == groups){
-			groups = new ArrayList<Group>();
+			groups = new HashMap<String,Group>();
 		}
-		groups.add(group);
+		groups.put(group.getId(), group);
 	}
 
 	public void clone(Variant other){

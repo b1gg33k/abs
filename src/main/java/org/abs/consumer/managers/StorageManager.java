@@ -71,28 +71,28 @@ public class StorageManager extends BaseManager {
 		return entityMap;
 	}
 
-	public <T extends IEntity> List<T> loadEntityList(Class<T> entityClass){
-		String key = applicationManager.getBaseNamespace() + "::" + entityClass.getSimpleName().toLowerCase();
-		Jedis jedis = pool.getResource();
-		jedis.select(databaseIndex);
-		List<String> redisList = jedis.lrange(key, 0,-1);
-		pool.returnResource(jedis);
-		List<T> entityList = null;
-		if (null != redisList){
-			entityList = new ArrayList<T>();
-			for (String json : redisList){
-				ObjectMapper mapper = new ObjectMapper();
-				try {
-					T entity = mapper.readValue(json,entityClass);
-					if (null != entity) entityList.add(entity);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-		}
-
-		return entityList;
-	}
+//	public <T extends IEntity> List<T> loadEntityList(Class<T> entityClass){
+//		String key = applicationManager.getBaseNamespace() + "::" + entityClass.getSimpleName().toLowerCase();
+//		Jedis jedis = pool.getResource();
+//		jedis.select(databaseIndex);
+//		List<String> redisList = jedis.lrange(key, 0,-1);
+//		pool.returnResource(jedis);
+//		List<T> entityList = null;
+//		if (null != redisList){
+//			entityList = new ArrayList<T>();
+//			for (String json : redisList){
+//				ObjectMapper mapper = new ObjectMapper();
+//				try {
+//					T entity = mapper.readValue(json,entityClass);
+//					if (null != entity) entityList.add(entity);
+//				} catch (IOException e) {
+//					e.printStackTrace();
+//				}
+//			}
+//		}
+//
+//		return entityList;
+//	}
 
 	public <T extends IEntity> void saveEntityMap(Map<String, T> data){
 		if (null == data || data.size()==0) return;
@@ -113,24 +113,24 @@ public class StorageManager extends BaseManager {
 		pool.returnResource(jedis);
 	}
 
-	public <T extends IEntity> void saveEntityList(List<T> data){
-		if (null == data || data.size()==0){
-			return;
-		}
-		Jedis jedis = pool.getResource();
-		jedis.select(databaseIndex);
-		Pipeline pipeline = jedis.pipelined();
-		for (IEntity value : data){
-			String key = applicationManager.getBaseNamespace()  + "::"  + value.getClass().getSimpleName().toLowerCase();
-			try {
-				pipeline.lpush(key, value.toJson());
-			} catch (JsonProcessingException e) {
-				log.error(e.getLocalizedMessage(),e);
-			}
-		}
-		pipeline.sync();
-		pool.returnResource(jedis);
-	}
+//	public <T extends IEntity> void saveEntityList(List<T> data){
+//		if (null == data || data.size()==0){
+//			return;
+//		}
+//		Jedis jedis = pool.getResource();
+//		jedis.select(databaseIndex);
+//		Pipeline pipeline = jedis.pipelined();
+//		for (IEntity value : data){
+//			String key = applicationManager.getBaseNamespace()  + "::"  + value.getClass().getSimpleName().toLowerCase();
+//			try {
+//				pipeline.lpush(key, value.toJson());
+//			} catch (JsonProcessingException e) {
+//				log.error(e.getLocalizedMessage(),e);
+//			}
+//		}
+//		pipeline.sync();
+//		pool.returnResource(jedis);
+//	}
 
 	public void saveEntity(IEntity entity){
 		saveEntity(entity, false);
@@ -159,8 +159,8 @@ public class StorageManager extends BaseManager {
 		T entity = null;
 
 		Jedis jedis = pool.getResource();
-		String json = jedis.hget(key,entityId);
 		jedis.select(databaseIndex);
+		String json = jedis.hget(key,entityId);
 		pool.returnResource(jedis);
 		if (null != json){
 			ObjectMapper mapper = new ObjectMapper();

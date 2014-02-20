@@ -1,7 +1,9 @@
 package org.abs.consumer.entities;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.
@@ -12,7 +14,7 @@ import java.util.List;
 public class Experiment extends BaseEntity implements IEntity {
 	private static final long serialVersionUID = -2883767302035068380L;
 	private List<Variant> variants = new ArrayList<Variant>();
-	private List<Group> groups = new ArrayList<Group>();
+	private Map<String,Group> groups = new HashMap<String,Group>();
 	private String strategy = null;
 
 	public Experiment() {
@@ -22,14 +24,14 @@ public class Experiment extends BaseEntity implements IEntity {
 		super(id);
 	}
 
-	public Experiment(String id, List<Group> groups, List<Variant> variants, String strategy) {
+	public Experiment(String id, Map<String,Group> groups, List<Variant> variants, String strategy) {
 		super(id);
 		this.variants = variants;
 		this.groups = groups;
 		this.strategy = strategy;
 	}
 
-	public Experiment(String id, List<Group> groups, List<Variant> variants) {
+	public Experiment(String id, Map<String, Group> groups, List<Variant> variants) {
 		super(id);
 		this.variants = variants;
 		this.groups = groups;
@@ -47,11 +49,11 @@ public class Experiment extends BaseEntity implements IEntity {
 		}
 	}
 
-	public List<Group> getGroups() {
+	public Map<String,Group> getGroups() {
 		return groups;
 	}
 
-	public void setGroups(List<Group> groups) {
+	public void setGroups(Map<String,Group> groups) {
 		this.groups = groups;
 	}
 

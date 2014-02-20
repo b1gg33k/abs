@@ -8,6 +8,8 @@ import org.abs.consumer.entities.Variant;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -25,9 +27,17 @@ public class EvenStrategy extends BaseStrategy {
 			SecureRandom prng = SecureRandom.getInstance("SHA1PRNG");
 			int groupSize = variant.getGroups().size();
 			int selected = prng.nextInt(groupSize);
-			activeGroup = variant.getGroups().get(selected);
-			PersonaVariant personaVariant = new PersonaVariant(variant, activeGroup);
-			persona.addVariant(personaVariant);
+
+			int X = 0;
+			for (String id : variant.getGroups().keySet()){
+				if (X == selected){
+					activeGroup = variant.getGroups().get(id);
+					PersonaVariant personaVariant = new PersonaVariant(variant, activeGroup);
+					persona.addVariant(personaVariant);
+					break;
+				}
+				X++;
+			}
 		} catch (NoSuchAlgorithmException e) {
 			e.printStackTrace();
 		}

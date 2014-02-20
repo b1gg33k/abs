@@ -5,6 +5,8 @@ import org.abs.consumer.entities.Persona;
 import org.abs.consumer.entities.PersonaVariant;
 import org.abs.consumer.entities.Variant;
 
+import java.util.List;
+
 /**
  * Created by IntelliJ IDEA.
  * User: dale
@@ -12,13 +14,10 @@ import org.abs.consumer.entities.Variant;
  * Time: 12:30 AM
  */
 
-/* The base always choose the first group. */
+/* assign none */
 public class BaseStrategy implements IStrategy {
 	public Group assign(Variant variant, Persona persona) {
-		Group activeGroup = (null != variant.getGroups() && variant.getGroups().size()>0) ? variant.getGroups().get(0) : null;
-		PersonaVariant personaVariant = new PersonaVariant(variant, activeGroup);
-		persona.addVariant(personaVariant);
-		return activeGroup;
+		return null;
 	}
 
 	public IStrategy getInstance() {

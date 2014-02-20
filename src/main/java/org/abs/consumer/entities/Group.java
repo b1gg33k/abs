@@ -7,10 +7,25 @@ package org.abs.consumer.entities;
  * Time: 5:10 PM
  */
 public class Group extends BaseEntity {
+	String value = null;
+
 	public Group() {
 	}
 
 	public Group(String id) {
 		super(id);
+	}
+
+	public Group(String id, String value) {
+		super(id);
+		this.value = value;
+	}
+
+	public String getValue() {
+		return value;
+	}
+
+	public void setValue(String value) {
+		this.value = value;
 	}
 }
