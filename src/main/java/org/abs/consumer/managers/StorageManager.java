@@ -33,7 +33,7 @@ public class StorageManager extends BaseManager {
 
 	public StorageManager() {
 		super();
-		int poolSize = 5;
+		int poolSize = 20;
 		if (null != properties){
 			String dbIndex = properties.getProperty("database.index","0");
 			if (null != dbIndex){
@@ -45,11 +45,13 @@ public class StorageManager extends BaseManager {
 		JedisPoolConfig poolConfig = new JedisPoolConfig();
 		poolConfig.setMaxActive(poolSize);
 		pool = new JedisPool(poolConfig, "localhost");
-	}	
+	}
+
 	public <T extends IEntity> Map<String,T> loadEntityMap(Class<T> entityClass){
 		String key = applicationManager.getBaseNamespace() + "::" + entityClass.getSimpleName().toLowerCase();
 		Jedis jedis = pool.getResource();
 		jedis.select(databaseIndex);
+		pool.returnResource(jedis);
 		Map<String, String> redisMap = jedis.hgetAll(key);
 		Map<String, T> entityMap = null;
 

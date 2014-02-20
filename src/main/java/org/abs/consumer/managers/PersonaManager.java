@@ -41,12 +41,17 @@ public class PersonaManager extends BaseManager {
 				if (variant.getGroups().containsKey(activeGroupId)){
 					personaVariant = new PersonaVariant(variant,variant.getGroups().get(activeGroupId));
 					persona.addVariant(personaVariant);
+					break;
 				}
 			}
 
 			if (null == personaVariant){
-				personaVariant = new PersonaVariant(variant,strategy.assign(variant, persona));
-				persona.addVariant(personaVariant);
+				Group assignedGroup = strategy.assign(variant, persona);
+				personaVariant = new PersonaVariant(variant,assignedGroup);
+				if (null != assignedGroup){
+					persona.addVariant(personaVariant);
+					activeGroupIds.add(assignedGroup.getId());
+				}
 			}
 		}
 	}

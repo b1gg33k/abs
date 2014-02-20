@@ -39,9 +39,13 @@ public class PersonaManagerTest extends Assert {
 		PersonaManager.getInstance().addExperiment(persona, experiment);
 
 
-		//Assert.assertEquals(1, persona.getExperiments().size());
-		//Assert.assertEquals("groupA", persona.getVariant("variant1").getActiveGroup().getId());
-		//Assert.assertTrue("Persona does not have the inactive group on variant2.", persona.getVariant("variant2").getGroups().contains(groups1.get(0)));
+		assertEquals(1, persona.getExperiments().size());
+		assertEquals(persona.getVariant("variant1").getActiveGroup().getId(),persona.getVariant("variant2").getActiveGroup().getId());
+		for (String groupName : persona.getVariant("variant2").getGroups().keySet()){
+			Group expected = persona.getVariant("variant1").getGroups().get(groupName);
+			Group actual = persona.getVariant("variant2").getGroups().get(groupName);
+			assertEquals(expected.getId(),actual.getId());
+		}
 
 	}
 
@@ -58,8 +62,8 @@ public class PersonaManagerTest extends Assert {
 
 	private Experiment createExperiment(){
 		Map<String,Group> groups1 = new HashMap<String, Group>();
-		groups1.put("groupA", new Group("groupA", "http://img2.timeinc.net/ew/i/2013/07/11/JUSTIN-BIEBER.jpg"));
-		groups1.put("groupB", new Group("groupB", "http://www.billboard.com/files/styles/promo_650/public/media/miley_cyrus_2013-650-430c.jpg"));
+		groups1.put("groupA", new Group("groupA", "groupA"));
+		groups1.put("groupB", new Group("groupB", "groupB"));
 
 		List<Variant> variants = new ArrayList<Variant>();
 		Variant variant1 = new Variant("variant1");
@@ -67,8 +71,8 @@ public class PersonaManagerTest extends Assert {
 		variants.add(variant1);
 
 		Map<String, Group> groups2 = new HashMap<String,Group>();
-		groups2.put("groupA", new Group("groupA", "red"));
-		groups2.put("groupB", new Group("groupB", "blue"));
+		groups2.put("groupA", new Group("groupA", "groupA"));
+		groups2.put("groupB", new Group("groupB", "groupB"));
 
 		Variant variant2 = new Variant("variant2");
 		variant2.setGroups(groups2);

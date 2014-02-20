@@ -1,7 +1,11 @@
 package org.abs.web;
 
+import org.abs.consumer.entities.Experiment;
+import org.abs.consumer.entities.Group;
 import org.abs.consumer.entities.Persona;
+import org.abs.consumer.entities.Variant;
 import org.abs.consumer.managers.PersonaManager;
+import org.abs.consumer.managers.StorageManager;
 import org.apache.commons.codec.digest.DigestUtils;
 
 import javax.servlet.*;
@@ -11,6 +15,10 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.
@@ -37,6 +45,29 @@ public class ABSFilter implements Filter {
 		if (null != attributeName){
 			this.attributeName = attributeName;
 		}
+
+		Map<String,Group> groups1 = new HashMap<String, Group>();
+		groups1.put("groupA", new Group("groupA", "http://img2.timeinc.net/ew/i/2013/07/11/JUSTIN-BIEBER.jpg"));
+		groups1.put("groupB", new Group("groupB", "http://www.billboard.com/files/styles/promo_650/public/media/miley_cyrus_2013-650-430c.jpg"));
+
+		List<Variant> variants = new ArrayList<Variant>();
+		Variant variant1 = new Variant("variant1");
+		variant1.setGroups(groups1);
+		variants.add(variant1);
+
+		Map<String, Group> groups2 = new HashMap<String,Group>();
+		groups2.put("groupA", new Group("groupA", "red"));
+		groups2.put("groupB", new Group("groupB", "blue"));
+
+		Variant variant2 = new Variant("variant2");
+		variant2.setGroups(groups2);
+		variants.add(variant2);
+
+		Experiment experiment = new Experiment("testExperiment", groups1, variants);
+		experiment.setStrategy("Even");
+		StorageManager.getInstance().saveEntity(experiment);
+		experiment.setStrategy("Even");
+
 	}
 
 	@Override
@@ -55,10 +86,12 @@ public class ABSFilter implements Filter {
 		String sessionId = null;
 		if (null != userCookie){
 			Cookie[] cookies = ((HttpServletRequest) servletRequest).getCookies();
-			for (Cookie cookie : cookies){
-				if (cookie.getName().equals(userCookie)){
-					sessionId = cookie.getValue();
-					break;
+			if (null != cookies){
+				for (Cookie cookie : cookies){
+					if (cookie.getName().equals(userCookie)){
+						sessionId = cookie.getValue();
+						break;
+					}
 				}
 			}
 		}
@@ -77,7 +110,10 @@ public class ABSFilter implements Filter {
 	}
 
 	private void postProcess(ServletRequest servletRequest){
-
+		Object personaObject = servletRequest.getAttribute(attributeName);
+		if (personaObject instanceof  Persona){
+			PersonaManager.getInstance().savePersona((Persona) personaObject);
+		}
 	}
 
 	public String generateSessionId(HttpServletRequest servletRequest){

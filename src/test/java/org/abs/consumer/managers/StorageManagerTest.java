@@ -43,10 +43,19 @@ public class StorageManagerTest {
 	}
 
 	@Test
+	public void testLoadEntityMap() throws Exception {
+		//We hae this to test if resources are returned to the pool...
+		//The test won't fail, it just wont ever end.
+		for (int X = 0; X<=500; X++){
+			Map<String,TestEntity> theMap = StorageManager.getInstance().loadEntityMap(TestEntity.class);
+		}
+	}
+
+	@Test
 	public void testSaveLoadEntity() throws Exception {
 		Map<String,Group> groups = new HashMap<String, Group>();
-		groups.put("groupA",new Group("groupA"));
-		groups.put("groupB",new Group("groupB"));
+		groups.put("groupA", new Group("groupA"));
+		groups.put("groupB", new Group("groupB"));
 
 		List<Variant> variants = new ArrayList<Variant>();
 		Variant variant1 = new Variant("variant1");
