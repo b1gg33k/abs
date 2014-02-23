@@ -1,5 +1,4 @@
 import org.abs.consumer.entities.Persona;
-import org.abs.consumer.entities.Variant;
 
 import java.io.*;
 import javax.servlet.*;
@@ -31,11 +30,15 @@ public class HelloWorld extends HttpServlet {
 	  Persona persona = null;
 	  if (null != po){
 		  persona = (Persona) po;
-		  for (String key : persona.getVariants().keySet()){
-			  out.println("<h2>"+key+"</h2>");
-			  out.println("<pre>");
-			  out.println(persona.getVariant(key).getActiveGroup().toJson());
-			  out.println("</pre>");
+		  if (null != persona || null != persona.getVariants()){
+			  out.println("<body style='background-color: " + persona.getVariants().get("variant2").getActiveGroup().getValue() + "' />");
+			  for (String key : persona.getVariants().keySet()){
+				  out.println("<h2>"+key+"</h2>");
+				  out.println("<pre>");
+				  out.println(persona.getVariant(key).getActiveGroup().toJson());
+				  out.println("</pre>");
+			  }
+			  out.println("<img src='" + persona.getVariants().get("variant1").getActiveGroup().getValue() + "' />");
 		  }
 	  }
   }

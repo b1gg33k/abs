@@ -69,7 +69,7 @@ public class PersonaManager extends BaseManager {
 		}
 
 		try {
-			log.debug("Loaded persona: " + persona.toJson());
+			log.trace("Loaded persona: " + persona.toJson());
 		} catch (JsonProcessingException e) {
 			log.error(e.getLocalizedMessage());
 			log.debug(e);

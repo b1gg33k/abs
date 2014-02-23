@@ -83,4 +83,5 @@ public class StorageManagerTest {
 		Assert.assertNotNull(resultExperiment.getVariants().get(1).getGroups().get("groupA"));
 		Assert.assertNotNull(resultExperiment.getVariants().get(1).getGroups().get("groupB"));
 	}
+
 }
