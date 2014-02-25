@@ -46,34 +46,6 @@ public class ABSFilter implements Filter {
 			this.attributeName = attributeName;
 		}
 
-		Map<String,Group> groups1 = new HashMap<String, Group>();
-		groups1.put("groupA", new Group("groupA", "http://img2.timeinc.net/ew/i/2013/07/11/JUSTIN-BIEBER.jpg"));
-		groups1.put("groupB", new Group("groupB", "http://www.billboard.com/files/styles/promo_650/public/media/miley_cyrus_2013-650-430c.jpg"));
-		groups1.put("groupC", new Group("groupC", "http://cdn.thatgrapejuice.net/wp-content/uploads/2013/07/lady-gaga-that-grape-juice4.png"));
-		groups1.put("groupD", new Group("groupD", "http://factmag-images.s3.amazonaws.com/wp-content/uploads/2013/07/jt_tour_072413.jpg"));
-
-
-
-		List<Variant> variants = new ArrayList<Variant>();
-		Variant variant1 = new Variant("variant1");
-		variant1.setGroups(groups1);
-		variants.add(variant1);
-
-		Map<String, Group> groups2 = new HashMap<String,Group>();
-		groups2.put("groupA", new Group("groupA", "red"));
-		groups2.put("groupB", new Group("groupB", "blue"));
-		groups2.put("groupC", new Group("groupC", "purple"));
-		groups2.put("groupD", new Group("groupD", "yellow"));
-
-		Variant variant2 = new Variant("variant2");
-		variant2.setGroups(groups2);
-		variants.add(variant2);
-
-		Experiment experiment = new Experiment("testExperiment", groups1, variants);
-		experiment.setStrategy("Even");
-		EntityDAO.getInstance().saveEntity(experiment);
-		experiment.setStrategy("Even");
-
 	}
 
 	@Override

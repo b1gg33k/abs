@@ -74,8 +74,6 @@ public class EntityDAOTest {
 		Experiment resultExperiment = EntityDAO.getInstance().loadEntity(experiment.getId(),Experiment.class);
 
 		Assert.assertNotNull(resultExperiment);
-		Assert.assertNotNull(resultExperiment.getGroups().get("groupA"));
-		Assert.assertNotNull(resultExperiment.getGroups().get("groupB"));
 		Assert.assertEquals("variant1", resultExperiment.getVariants().get(0).getId());
 		Assert.assertEquals("variant2", resultExperiment.getVariants().get(1).getId());
 

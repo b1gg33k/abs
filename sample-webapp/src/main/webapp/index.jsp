@@ -1,23 +1,11 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
 <head>
 <title>Sample Application JSP Page</title>
 </head>
-<body bgcolor=white>
-
-<table border="0">
-<tr>
-<td align=center>
-<img src="images/tomcat.gif">
-</td>
-<td>
-<h1>Sample Application JSP Page</h1>
-This is the output of a JSP page that is part of the Hello, World
-application.
-</td>
-</tr>
-</table>
-
-<%= new String("Hello!") %>
+<c:set var="persona" value="${requestScope.abtest}" />
+<body bgcolor="${persona.variants.variant2.activeGroup.value}">
+<h1>${persona.variants.variant3.activeGroup.value}</h1>
 
 </body>
 </html>

@@ -40,13 +40,7 @@ public class HelloWorld extends HttpServlet {
 				out.println("<img src='" + persona.getVariants().get("variant1").getActiveGroup().getValue() + "' />");
 			}
 
-			if (null != persona.getExperiments()) {
-				for (Experiment experiment : persona.getExperiments()) {
-					out.println("<pre>");
-					out.println(experiment.toJson(true));
-					out.println("</pre>");
-				}
-			}
+			out.println("<br /><h2><a href=\"index.jsp\">Proceed</a></h2>");
 		}
 	}
 
