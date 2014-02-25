@@ -24,7 +24,6 @@ public class ExperimentManagerTest extends Assert {
 	@Before
 	public void setUp() throws Exception {
 		Jedis jedis = EntityDAO.getInstance().getPool().getResource();
-		jedis.select(EntityDAO.getInstance().getDatabaseIndex());
 		jedis.flushDB();
 		EntityDAO.getInstance().getPool().returnResource(jedis);
 	}

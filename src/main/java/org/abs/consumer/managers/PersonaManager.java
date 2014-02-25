@@ -81,6 +81,23 @@ public class PersonaManager extends BaseManager {
 		return persona;
 	}
 
+	public Persona loadPersona(String personaId, String[] overideGroups){
+		Persona persona = loadPersona(personaId);
+		if (null != overideGroups && overideGroups.length > 0){
+			for (PersonaVariant variant : persona.getVariants().values()){
+				for (Group group : variant.getGroups().values()){
+					for (String groupName : overideGroups){
+						if (group.getId().equals(groupName)){
+							variant.setActiveGroup(group);
+							break;
+						}
+					}
+				}
+			}
+		}
+		return persona;
+	}
+
 	public void savePersona(Persona persona){
 		EntityDAO.getInstance().saveEntity(persona);
 	}

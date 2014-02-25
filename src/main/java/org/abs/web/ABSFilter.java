@@ -114,7 +114,9 @@ public class ABSFilter implements Filter {
 			cookie.setMaxAge(Integer.MAX_VALUE);
 			servletResponse.addCookie(cookie);
 		}
-		Persona persona = PersonaManager.getInstance().loadPersona(sessionId);
+		String[] overideGroups = servletRequest.getParameterValues("aboveride");
+		Persona persona = PersonaManager.getInstance().loadPersona(sessionId, overideGroups);
+
 		servletRequest.setAttribute(attributeName, persona);
 	}
 

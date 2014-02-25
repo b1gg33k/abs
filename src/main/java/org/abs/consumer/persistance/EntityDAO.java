@@ -28,35 +28,19 @@ public class EntityDAO  {
 	private static EntityDAO instance = new EntityDAO();
 	private ApplicationManager applicationManager;
 	private JedisPool pool = null;
-	private int databaseIndex = 0;
 
 	public static EntityDAO getInstance() {
 		return instance;
 	}
 
-	public int getDatabaseIndex() {
-		return databaseIndex;
-	}
-
-	public void setDatabaseIndex(int databaseIndex) {
-		this.databaseIndex = databaseIndex;
-	}
-
 	public EntityDAO() {
-		super();
-		int poolSize = 20;
-		int port = 6379;
-		int timeout = 300;
-
 		Properties properties = PropertiesManager.getInstance().getProperties();
 		String hostname = properties.getProperty("database.host","localhost");
-		databaseIndex = PropertiesManager.getInstance().getIntProperty("database.index", 0);
-		poolSize = PropertiesManager.getInstance().getIntProperty("redis.pool.size", poolSize);
-		port = PropertiesManager.getInstance().getIntProperty("database.port", port);
-		timeout = PropertiesManager.getInstance().getIntProperty("database.timeout", timeout);
 		String password = properties.getProperty("database.password");
-
-
+		int databaseIndex = PropertiesManager.getInstance().getIntProperty("database.index", 0);
+		int poolSize = PropertiesManager.getInstance().getIntProperty("redis.pool.size", 20);
+		int port = PropertiesManager.getInstance().getIntProperty("database.port", 6379);
+		int timeout = PropertiesManager.getInstance().getIntProperty("database.timeout", 300);
 
 		applicationManager = ApplicationManager.getInstance();
 		JedisPoolConfig poolConfig = new JedisPoolConfig();
@@ -94,7 +78,6 @@ public class EntityDAO  {
 //	public <T extends IEntity> List<T> loadEntityList(Class<T> entityClass){
 //		String key = applicationManager.getBaseNamespace() + "::" + entityClass.getSimpleName().toLowerCase();
 //		Jedis jedis = pool.getResource();
-//		jedis.select(databaseIndex);
 //		List<String> redisList = jedis.lrange(key, 0,-1);
 //		pool.returnResource(jedis);
 //		List<T> entityList = null;
@@ -138,7 +121,6 @@ public class EntityDAO  {
 //			return;
 //		}
 //		Jedis jedis = pool.getResource();
-//		jedis.select(databaseIndex);
 //		Pipeline pipeline = jedis.pipelined();
 //		for (IEntity value : data){
 //			String key = applicationManager.getBaseNamespace()  + "::"  + value.getClass().getSimpleName().toLowerCase();
