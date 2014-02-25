@@ -1,19 +1,20 @@
-package org.abs.consumer.managers;
+package org.abs.consumer.persistance;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.abs.consumer.entities.IEntity;
-import redis.clients.jedis.Jedis;
-import redis.clients.jedis.JedisPool;
-import redis.clients.jedis.JedisPoolConfig;
-import redis.clients.jedis.Pipeline;
+import org.abs.consumer.managers.ApplicationManager;
+import org.abs.consumer.managers.BaseManager;
+import org.abs.consumer.managers.PropertiesManager;
+import org.apache.log4j.Logger;
+import redis.clients.jedis.*;
 
 import java.io.IOException;
-import java.util.ArrayList;
+import java.net.URI;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 /**
  * Created by IntelliJ IDEA.
@@ -21,36 +22,52 @@ import java.util.Map;
  * Date: 2/13/14
  * Time: 2:35 AM
  */
-public class StorageManager extends BaseManager {
-	private static StorageManager instance = new StorageManager();
+public class EntityDAO  {
+	protected static Logger log = Logger.getLogger(EntityDAO.class);
+
+	private static EntityDAO instance = new EntityDAO();
 	private ApplicationManager applicationManager;
 	private JedisPool pool = null;
 	private int databaseIndex = 0;
 
-	public static StorageManager getInstance() {
+	public static EntityDAO getInstance() {
 		return instance;
 	}
 
-	public StorageManager() {
+	public int getDatabaseIndex() {
+		return databaseIndex;
+	}
+
+	public void setDatabaseIndex(int databaseIndex) {
+		this.databaseIndex = databaseIndex;
+	}
+
+	public EntityDAO() {
 		super();
 		int poolSize = 20;
-		if (null != properties){
-			String dbIndex = properties.getProperty("database.index","0");
-			if (null != dbIndex){
-				databaseIndex = Integer.parseInt(dbIndex);
-			}
-			poolSize = Integer.parseInt(properties.getProperty("redis.pool.size", "5"));
-		}
+		int port = 6379;
+		int timeout = 300;
+
+		Properties properties = PropertiesManager.getInstance().getProperties();
+		String hostname = properties.getProperty("database.host","localhost");
+		databaseIndex = PropertiesManager.getInstance().getIntProperty("database.index", 0);
+		poolSize = PropertiesManager.getInstance().getIntProperty("redis.pool.size", poolSize);
+		port = PropertiesManager.getInstance().getIntProperty("database.port", port);
+		timeout = PropertiesManager.getInstance().getIntProperty("database.timeout", timeout);
+		String password = properties.getProperty("database.password");
+
+
+
 		applicationManager = ApplicationManager.getInstance();
 		JedisPoolConfig poolConfig = new JedisPoolConfig();
 		poolConfig.setMaxActive(poolSize);
-		pool = new JedisPool(poolConfig, "localhost");
+
+		pool = new JedisPool(poolConfig, hostname, port, timeout, password, databaseIndex);
 	}
 
 	public <T extends IEntity> Map<String,T> loadEntityMap(Class<T> entityClass){
 		String key = applicationManager.getBaseNamespace() + "::" + entityClass.getSimpleName().toLowerCase();
 		Jedis jedis = pool.getResource();
-		jedis.select(databaseIndex);
 		pool.returnResource(jedis);
 		Map<String, String> redisMap = jedis.hgetAll(key);
 		Map<String, T> entityMap = null;
@@ -69,6 +86,7 @@ public class StorageManager extends BaseManager {
 				}
 			}
 		}
+		pool.returnResource(jedis);
 
 		return entityMap;
 	}
@@ -99,7 +117,7 @@ public class StorageManager extends BaseManager {
 	public <T extends IEntity> void saveEntityMap(Map<String, T> data){
 		if (null == data || data.size()==0) return;
 		Jedis jedis = pool.getResource();
-		jedis.select(databaseIndex);
+
 		Pipeline pipeline = jedis.pipelined();
 		for (String dataKey : data.keySet()){
 			IEntity entity = data.get(dataKey);
@@ -150,7 +168,6 @@ public class StorageManager extends BaseManager {
 		}
 		if (null != json){
 			Jedis jedis = pool.getResource();
-			jedis.select(databaseIndex);
 			jedis.hset(key,entity.getId(), json);
 			pool.returnResource(jedis);
 		}
@@ -161,7 +178,6 @@ public class StorageManager extends BaseManager {
 		T entity = null;
 
 		Jedis jedis = pool.getResource();
-		jedis.select(databaseIndex);
 		String json = jedis.hget(key,entityId);
 		pool.returnResource(jedis);
 		if (null != json){

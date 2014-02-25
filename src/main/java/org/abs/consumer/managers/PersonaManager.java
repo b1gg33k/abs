@@ -4,8 +4,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import org.abs.consumer.distribution.IStrategy;
 import org.abs.consumer.distribution.StrategyFactory;
 import org.abs.consumer.entities.*;
+import org.abs.consumer.persistance.EntityDAO;
+import org.apache.log4j.Logger;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -18,6 +19,8 @@ import java.util.Map;
  * Time: 11:55 PM
  */
 public class PersonaManager extends BaseManager {
+	protected static Logger log = Logger.getLogger(PersonaManager.class);
+
 	private static PersonaManager instance = null;
 	private static Map<String,Persona> personaCache = new HashMap<String, Persona>();
 	private ExperimentManager experimentManager = ExperimentManager.getInstance();
@@ -62,7 +65,7 @@ public class PersonaManager extends BaseManager {
 	}
 
 	public Persona loadPersona(String personaId){
-		Persona persona = StorageManager.getInstance().loadEntity(personaId,Persona.class);
+		Persona persona = EntityDAO.getInstance().loadEntity(personaId,Persona.class);
 		if (null == persona){
 			persona = new Persona(personaId);
 			addExperiments(persona,ExperimentManager.getInstance().getExperiments());
@@ -79,6 +82,6 @@ public class PersonaManager extends BaseManager {
 	}
 
 	public void savePersona(Persona persona){
-		StorageManager.getInstance().saveEntity(persona);
+		EntityDAO.getInstance().saveEntity(persona);
 	}
 }

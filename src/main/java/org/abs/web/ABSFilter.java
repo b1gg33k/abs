@@ -5,16 +5,15 @@ import org.abs.consumer.entities.Group;
 import org.abs.consumer.entities.Persona;
 import org.abs.consumer.entities.Variant;
 import org.abs.consumer.managers.PersonaManager;
-import org.abs.consumer.managers.StorageManager;
+import org.abs.consumer.persistance.EntityDAO;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.log4j.Logger;
 
 import javax.servlet.*;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -27,6 +26,7 @@ import java.util.Map;
  * Time: 12:01 AM
  */
 public class ABSFilter implements Filter {
+	protected static Logger log = Logger.getLogger(ABSFilter.class);
 	public static final String USER_COOKIE = "userCookie";
 	public static final String ATTRIBUTE_NAME = "attributeName";
 	private FilterConfig filterConfig = null;
@@ -71,13 +71,14 @@ public class ABSFilter implements Filter {
 
 		Experiment experiment = new Experiment("testExperiment", groups1, variants);
 		experiment.setStrategy("Even");
-		StorageManager.getInstance().saveEntity(experiment);
+		EntityDAO.getInstance().saveEntity(experiment);
 		experiment.setStrategy("Even");
 
 	}
 
 	@Override
 	public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
+		long start = System.currentTimeMillis();
 		if (servletRequest instanceof HttpServletRequest){
 			preProcess(servletRequest, (HttpServletResponse) servletResponse);
 			filterChain.doFilter(servletRequest, servletResponse);
@@ -86,6 +87,8 @@ public class ABSFilter implements Filter {
 			//Do you even lift Bro? Pass it through.
 			filterChain.doFilter(servletRequest, servletResponse);
 		}
+		long end = System.currentTimeMillis();
+		log.debug("ABS took " + (end-start) + "ms");
 	}
 
 	private void preProcess(ServletRequest servletRequest, HttpServletResponse servletResponse){

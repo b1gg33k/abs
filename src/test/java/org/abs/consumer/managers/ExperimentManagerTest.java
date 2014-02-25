@@ -4,8 +4,8 @@ import junit.framework.Assert;
 import org.abs.consumer.entities.Experiment;
 import org.abs.consumer.entities.Group;
 import org.abs.consumer.entities.Variant;
+import org.abs.consumer.persistance.EntityDAO;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import redis.clients.jedis.Jedis;
 
@@ -23,9 +23,10 @@ import java.util.Map;
 public class ExperimentManagerTest extends Assert {
 	@Before
 	public void setUp() throws Exception {
-		Jedis jedis = StorageManager.getInstance().getPool().getResource();
+		Jedis jedis = EntityDAO.getInstance().getPool().getResource();
+		jedis.select(EntityDAO.getInstance().getDatabaseIndex());
 		jedis.flushDB();
-		StorageManager.getInstance().getPool().returnResource(jedis);
+		EntityDAO.getInstance().getPool().returnResource(jedis);
 	}
 
 	@Test
@@ -68,7 +69,7 @@ public class ExperimentManagerTest extends Assert {
 			experimentList.add(experiment);
 			experiments.put(experiment.getId(),experiment);
 		}
-		StorageManager.getInstance().saveEntityMap(experiments);
+		EntityDAO.getInstance().saveEntityMap(experiments);
 		return experimentList;
 	}
 }

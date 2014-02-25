@@ -1,7 +1,8 @@
-package org.abs.consumer.managers;
+package org.abs.consumer.persistance;
 
 import junit.framework.Assert;
 import org.abs.consumer.entities.*;
+import org.abs.consumer.persistance.EntityDAO;
 import org.junit.Before;
 import org.junit.Test;
 import redis.clients.jedis.Jedis;
@@ -14,12 +15,12 @@ import java.util.*;
  * Date: 2/15/14
  * Time: 1:27 PM
  */
-public class StorageManagerTest {
+public class EntityDAOTest {
 	@Before
 	public void setUp() throws Exception {
-		Jedis jedis = StorageManager.getInstance().getPool().getResource();
+		Jedis jedis = EntityDAO.getInstance().getPool().getResource();
 		jedis.flushDB();
-		StorageManager.getInstance().getPool().returnResource(jedis);
+		EntityDAO.getInstance().getPool().returnResource(jedis);
 	}
 
 	@Test
@@ -30,9 +31,9 @@ public class StorageManagerTest {
 		testMap.put("3", new TestEntity("three"));
 		testMap.put("4", new TestEntity("four"));
 
-		StorageManager storageManager = StorageManager.getInstance();
-		storageManager.saveEntityMap(testMap);
-		Map<String,TestEntity> resultsMap = storageManager.loadEntityMap(TestEntity.class);
+		EntityDAO entityDAO = EntityDAO.getInstance();
+		entityDAO.saveEntityMap(testMap);
+		Map<String,TestEntity> resultsMap = entityDAO.loadEntityMap(TestEntity.class);
 
 		for (String key : testMap.keySet()){
 			Assert.assertTrue(resultsMap.containsKey(key));
@@ -47,7 +48,7 @@ public class StorageManagerTest {
 		//We hae this to test if resources are returned to the pool...
 		//The test won't fail, it just wont ever end.
 		for (int X = 0; X<=500; X++){
-			Map<String,TestEntity> theMap = StorageManager.getInstance().loadEntityMap(TestEntity.class);
+			Map<String,TestEntity> theMap = EntityDAO.getInstance().loadEntityMap(TestEntity.class);
 		}
 	}
 
@@ -69,8 +70,8 @@ public class StorageManagerTest {
 		Experiment experiment = new Experiment("testExperiment", groups, variants);
 		experiment.setStrategy("Even");
 
-		StorageManager.getInstance().saveEntity(experiment);
-		Experiment resultExperiment = StorageManager.getInstance().loadEntity(experiment.getId(),Experiment.class);
+		EntityDAO.getInstance().saveEntity(experiment);
+		Experiment resultExperiment = EntityDAO.getInstance().loadEntity(experiment.getId(),Experiment.class);
 
 		Assert.assertNotNull(resultExperiment);
 		Assert.assertNotNull(resultExperiment.getGroups().get("groupA"));

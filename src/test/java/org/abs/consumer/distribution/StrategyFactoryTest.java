@@ -5,7 +5,7 @@ import org.abs.consumer.entities.Experiment;
 import org.abs.consumer.entities.Group;
 import org.abs.consumer.entities.Persona;
 import org.abs.consumer.entities.Variant;
-import org.abs.consumer.managers.StorageManager;
+import org.abs.consumer.persistance.EntityDAO;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -37,7 +37,7 @@ public class StrategyFactoryTest {
 		Experiment experiment = new Experiment("testExperiment", groups, variants);
 		experiment.setStrategy("Even");
 
-		StorageManager.getInstance().saveEntity(experiment);
+		EntityDAO.getInstance().saveEntity(experiment);
 
 		Persona persona = new Persona("testUser");
 

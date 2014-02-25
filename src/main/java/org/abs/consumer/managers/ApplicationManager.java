@@ -1,6 +1,7 @@
 package org.abs.consumer.managers;
 
-import org.abs.consumer.entities.Configuration;
+import com.sun.org.apache.xerces.internal.impl.PropertyManager;
+import org.apache.log4j.Logger;
 
 import java.net.UnknownHostException;
 
@@ -10,18 +11,17 @@ import java.net.UnknownHostException;
  * Date: 2/13/14
  * Time: 2:39 AM
  */
-public class ApplicationManager extends BaseManager {
+public class ApplicationManager {
+	protected static Logger log = Logger.getLogger(ApplicationManager.class);
+
 	private static ApplicationManager instance = null;
 	private String applicationName = "noname";
 	private String baseNamespace = "org::abs";
-	private Configuration configuration = null;
 
 	public ApplicationManager() {
 		super();
-		if (null != properties){
-			applicationName = properties.getProperty("application.name",applicationName);
-			baseNamespace = properties.getProperty("baseNamespace","org::abs");
-		}
+		applicationName = PropertiesManager.getInstance().getProperties().getProperty("application.name",applicationName);
+		baseNamespace = PropertiesManager.getInstance().getProperties().getProperty("baseNamespace","org::abs");
 		loadConfiguration();
 	}
 

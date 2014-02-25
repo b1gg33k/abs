@@ -1,7 +1,8 @@
 package org.abs.consumer.managers;
 
-import org.abs.consumer.distribution.StrategyFactory;
 import org.abs.consumer.entities.Experiment;
+import org.abs.consumer.persistance.EntityDAO;
+import org.apache.log4j.Logger;
 
 import java.util.*;
 
@@ -12,6 +13,8 @@ import java.util.*;
  * Time: 2:22 AM
  */
 public class ExperimentManager extends BaseManager {
+	protected static Logger log = Logger.getLogger(ExperimentManager.class);
+
 	private static ExperimentManager instance = null;
 	private List<Experiment> experimentList = new ArrayList<Experiment>();
 	private long ttl = 300000L;
@@ -20,9 +23,7 @@ public class ExperimentManager extends BaseManager {
 	private ExperimentManager() {
 		super();
 		String ttlString = null;
-		if (null != properties){
-			ttlString = properties.getProperty("experiment.manager.ttl");
-		}
+		ttlString = PropertiesManager.getInstance().getProperties().getProperty("experiment.manager.ttl");
 		if (null != ttlString){
 			ttl = Long.parseLong(ttlString);
 		}
@@ -39,7 +40,7 @@ public class ExperimentManager extends BaseManager {
 	private void loadExperiments(){
 		long now = System.currentTimeMillis();
 		if (expires < now){
-			Map<String,Experiment> experimentMap = StorageManager.getInstance().loadEntityMap(Experiment.class);
+			Map<String,Experiment> experimentMap = EntityDAO.getInstance().loadEntityMap(Experiment.class);
 			List<Experiment> newExperimentList = new ArrayList<Experiment>();
 			for (String key : experimentMap.keySet()){
 				newExperimentList.add(experimentMap.get(key));

@@ -1,11 +1,11 @@
 package org.abs.consumer.managers;
 
 import junit.framework.Assert;
-import org.abs.consumer.distribution.StrategyFactory;
 import org.abs.consumer.entities.Experiment;
 import org.abs.consumer.entities.Group;
 import org.abs.consumer.entities.Persona;
 import org.abs.consumer.entities.Variant;
+import org.abs.consumer.persistance.EntityDAO;
 import org.junit.Before;
 import org.junit.Test;
 import redis.clients.jedis.Jedis;
@@ -24,15 +24,16 @@ import java.util.Map;
 public class PersonaManagerTest extends Assert {
 	@Before
 	public void setUp() throws Exception {
-		Jedis jedis = StorageManager.getInstance().getPool().getResource();
+		Jedis jedis = EntityDAO.getInstance().getPool().getResource();
+		jedis.select(EntityDAO.getInstance().getDatabaseIndex());
 		jedis.flushDB();
-		StorageManager.getInstance().getPool().returnResource(jedis);
+		EntityDAO.getInstance().getPool().returnResource(jedis);
 	}
 
 	@Test
 	public void testAddExperiment() throws Exception {
 		Experiment experiment = createExperiment();
-		StorageManager.getInstance().saveEntity(experiment);
+		EntityDAO.getInstance().saveEntity(experiment);
 
 		Persona persona = new Persona("testUser");
 
@@ -51,7 +52,7 @@ public class PersonaManagerTest extends Assert {
 
 	@Test
 	public void testSaveLoadPersona() throws Exception {
-		StorageManager.getInstance().saveEntity(createExperiment());
+		EntityDAO.getInstance().saveEntity(createExperiment());
 
 		Persona persona = PersonaManager.getInstance().loadPersona("lkkjasdfklsdaflkjasdflkj");
 		assertNotNull(persona.getExperiments());
@@ -80,7 +81,7 @@ public class PersonaManagerTest extends Assert {
 
 		Experiment experiment = new Experiment("testExperiment", groups1, variants);
 		experiment.setStrategy("Even");
-		StorageManager.getInstance().saveEntity(experiment);
+		EntityDAO.getInstance().saveEntity(experiment);
 		experiment.setStrategy("Even");
 
 		return experiment;
