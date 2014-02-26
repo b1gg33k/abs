@@ -1,6 +1,5 @@
 package org.abs.consumer.entities;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -12,67 +11,61 @@ import java.util.Map;
  * Date: 2/12/14
  * Time: 11:57 PM
  */
-public class Persona implements Serializable {
+public class Persona extends BaseEntity implements IEntity {
+	private List<Experiment> experiments = null;
+	private Map<String, PersonaVariant> variants = null;
 
-	private String id = null;
-	private List<String> experiments = new ArrayList<String>();
-	private Map<String,Serializable> variants = new HashMap<String,Serializable>();
-
-	private transient boolean changed = false;
-	private transient long expires = 0;
-
-	public Persona(String id) {
-		this.id = id;
+	public Persona() {
 	}
 
-	public Persona(String id, ArrayList<String> experiments) {
-		this.id = id;
+	public Persona(String id) {
+		super(id);
+	}
+
+	public Persona(String id, ArrayList<Experiment> experiments) {
+		super(id);
 		this.experiments = experiments;
 	}
 
-	public String getId() {
-		return id;
-	}
-
-	public void setId(String id) {
-		changed = true;
-		this.id = id;
-	}
-
-	public List<String> getExperiments() {
+	public List<Experiment> getExperiments() {
 		return experiments;
 	}
 
-	public void setExperiments(ArrayList<String> experiments) {
+	public void setExperiments(ArrayList<Experiment> experiments) {
 		changed = true;
 		this.experiments = experiments;
 	}
 
-	public Map<String, Serializable> getVariants() {
+	public Map<String, PersonaVariant> getVariants() {
 		return variants;
 	}
 
-	public void setVariants(Map<String, Serializable> variants) {
+	public void setVariants(Map<String, PersonaVariant> variants) {
 		changed = true;
 		if (null == variants){
-			this.variants = new HashMap<String, Serializable>();
+			this.variants = new HashMap<String, PersonaVariant>();
 		} else {
 			this.variants = variants;
 		}
 	}
 
-	public void addVariant(String variantName, Serializable variantValue){
+	public void addVariant(PersonaVariant variant){
 		changed = true;
-		if (null != variants){
-			variants.put(variantName, variantValue);
+		if (null == variants){
+			variants = new HashMap<String, PersonaVariant>();
 		}
+		variants.put(variant.getId(), variant);
 	}
 
-	public long getExpires() {
-		return expires;
+	public void addExperiment(Experiment experiment){
+		if (null == experiments){
+			experiments = new ArrayList<Experiment>();
+		}
+		experiments.add(experiment);
 	}
 
-	public void setExpires(long expires) {
-		this.expires = expires;
+	public PersonaVariant getVariant(String varientId){
+		return (variants.containsKey(varientId)) ? variants.get(varientId) : null;
 	}
+
 }

@@ -1,8 +1,5 @@
 package org.abs.consumer.entities;
 
-import org.abs.consumer.distribution.IStrategy;
-
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -14,12 +11,30 @@ import java.util.Map;
  * Date: 2/13/14
  * Time: 12:00 AM
  */
-public class Experiment implements Serializable {
+public class Experiment extends BaseEntity implements IEntity {
 	private static final long serialVersionUID = -2883767302035068380L;
 	private List<Variant> variants = new ArrayList<Variant>();
+	private Map<String,Group> groups = new HashMap<String,Group>();
+	private String strategy = null;
 
-	public Experiment(List<Variant> variants, Class<IStrategy> strategy) {
+	public Experiment() {
+	}
+
+	public Experiment(String id) {
+		super(id);
+	}
+
+	public Experiment(String id, Map<String,Group> groups, List<Variant> variants, String strategy) {
+		super(id);
 		this.variants = variants;
+		this.groups = groups;
+		this.strategy = strategy;
+	}
+
+	public Experiment(String id, Map<String, Group> groups, List<Variant> variants) {
+		super(id);
+		this.variants = variants;
+		this.groups = groups;
 	}
 
 	public List<Variant> getVariants() {
@@ -34,5 +49,20 @@ public class Experiment implements Serializable {
 		}
 	}
 
+	public Map<String,Group> getGroups() {
+		return groups;
+	}
+
+	public void setGroups(Map<String,Group> groups) {
+		this.groups = groups;
+	}
+
+	public String getStrategy() {
+		return strategy;
+	}
+
+	public void setStrategy(String strategy) {
+		this.strategy = strategy;
+	}
 
 }

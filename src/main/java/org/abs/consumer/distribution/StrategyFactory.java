@@ -14,24 +14,39 @@ import java.util.Map;
  * Time: 1:21 AM
  */
 public class StrategyFactory {
+	private static final StrategyFactory instance = new StrategyFactory();
 	IStrategy defaultStrategy = new BaseStrategy();
 	Map<String, IStrategy> strategies = new HashMap<String, IStrategy>();
 
-	public StrategyFactory() {
-		strategies.put("Percentage", new PercentageStrategy());
+	private StrategyFactory() {
+		strategies.put("Even", new EvenStrategy());
+	}
+
+	public static StrategyFactory getInstance() {
+		return instance;
+	}
+
+	public IStrategy getDefaultStrategy() {
+		return defaultStrategy;
 	}
 
 	public IStrategy getStrategy(String strategyName) {
-		IStrategy strategy = defaultStrategy;
+		IStrategy strategy = null;
 		if (null != strategies && strategies.containsKey(strategyName)) {
 			strategy = strategies.get(strategyName);
+		} else {
+			strategy = defaultStrategy;
 		}
 		return strategy;
 	}
 
 	public void addExperiment(Experiment experiment, Persona persona) {
+        IStrategy strategy = getStrategy(experiment.getStrategy());
+		persona.addExperiment(experiment);
+		if (null == strategy){
+			strategy = defaultStrategy;
+		}
 		for (Variant variant : experiment.getVariants()) {
-			IStrategy strategy = getStrategy(variant.getStrategy());
 			strategy.assign(variant, persona);
 		}
 	}

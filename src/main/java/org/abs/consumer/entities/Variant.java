@@ -1,9 +1,8 @@
 package org.abs.consumer.entities;
 
-import org.abs.consumer.distribution.IStrategy;
-
-import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -12,50 +11,47 @@ import java.util.Map;
  * Date: 2/12/14
  * Time: 11:58 PM
  */
-public class Variant implements Serializable {
-	private String id = null;
-	private Serializable control = null;
-	private Map<String,Serializable> alternates = null;
-	private String strategy = null;
+public class Variant extends BaseEntity implements IEntity {
+	private Map<String,Group> groups = null;
+
+	protected Variant(){
+
+	}
 
 	public Variant(String id) {
-		alternates = new HashMap<String, Serializable>();
+		super(id);
+		groups = new HashMap<String,Group>();
 	}
 
-	public Variant(String id, String control, Map<String, Serializable> alternates) {
-		this.control = control;
-		this.alternates = alternates;
+	public Variant(String id, Map<String,Group> groups) {
+		super(id);
+		this.groups = groups;
 	}
 
-	public String getId() {
-		return id;
+	public Map<String,Group> getGroups() {
+		return groups;
 	}
 
-	public void setId(String id) {
-		this.id = id;
+	public void setGroups(Map<String,Group> groups) {
+		this.groups = groups;
 	}
 
-	public Serializable getControl() {
-		return control;
+	public void addGroup(Group group){
+		if (null == groups){
+			groups = new HashMap<String,Group>();
+		}
+		groups.put(group.getId(), group);
 	}
 
-	public void setControl(Serializable control) {
-		this.control = control;
+	public void clone(Variant other){
+		other.setId(this.getId());
+		other.setGroups(this.getGroups());
 	}
 
-	public Map<String, Serializable> getAlternates() {
-		return alternates;
-	}
-
-	public void setAlternates(Map<String, Serializable> alternates) {
-		this.alternates = alternates;
-	}
-
-	public String getStrategy() {
-		return strategy;
-	}
-
-	public void setStrategy(String strategy) {
-		this.strategy = strategy;
+	@Override
+	public Variant clone(){
+		Variant other = new Variant();
+		clone(other);
+		return other;
 	}
 }

@@ -1,8 +1,11 @@
 package org.abs.consumer.distribution;
 
-import org.abs.consumer.entities.Experiment;
+import org.abs.consumer.entities.Group;
 import org.abs.consumer.entities.Persona;
+import org.abs.consumer.entities.PersonaVariant;
 import org.abs.consumer.entities.Variant;
+
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -10,9 +13,11 @@ import org.abs.consumer.entities.Variant;
  * Date: 2/13/14
  * Time: 12:30 AM
  */
+
+/* assign none */
 public class BaseStrategy implements IStrategy {
-	public void assign(Variant variant, Persona persona) {
-		persona.addVariant(variant.getId(),variant.getControl());
+	public Group assign(Variant variant, Persona persona) {
+		return null;
 	}
 
 	public IStrategy getInstance() {

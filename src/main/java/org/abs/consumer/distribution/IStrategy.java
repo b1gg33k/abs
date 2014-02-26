@@ -1,8 +1,6 @@
 package org.abs.consumer.distribution;
 
-import org.abs.consumer.entities.Experiment;
-import org.abs.consumer.entities.Persona;
-import org.abs.consumer.entities.Variant;
+import org.abs.consumer.entities.*;
 
 import java.io.Serializable;
 
@@ -13,5 +11,5 @@ import java.io.Serializable;
  * Time: 12:25 AM
  */
 public interface IStrategy extends Serializable {
-	public void assign(Variant variant, Persona persona);
+	public Group assign(Variant variant, Persona persona);
 }

@@ -10,21 +10,18 @@ import java.net.UnknownHostException;
  * Date: 2/13/14
  * Time: 2:39 AM
  */
-public class ApplicationManager {
+public class ApplicationManager extends BaseManager {
 	private static ApplicationManager instance = null;
-	private String applicationName = null;
-	private String nameSpace = "org::abs::";
-	private String localhostname;
+	private String applicationName = "noname";
+	private String baseNamespace = "org::abs";
 	private Configuration configuration = null;
 
-	private ApplicationManager(String applicationName) {
-		this.applicationName = applicationName;
-		loadConfiguration();
-	}
-
-	private ApplicationManager(String applicationName, String nameSpace) {
-		this.applicationName = applicationName;
-		this.nameSpace = nameSpace;
+	public ApplicationManager() {
+		super();
+		if (null != properties){
+			applicationName = properties.getProperty("application.name",applicationName);
+			baseNamespace = properties.getProperty("baseNamespace","org::abs");
+		}
 		loadConfiguration();
 	}
 
@@ -33,25 +30,15 @@ public class ApplicationManager {
 		try {
 			hostname = java.net.InetAddress.getLocalHost().getHostName();
 		} catch (UnknownHostException e) {
-			//TODO: Log it.
+			log.error("Error finding hostname, fallback to localhost: " + e.getLocalizedMessage());
+			log.debug("Stacktrace", e);
 		}
 		return hostname;
 	}
 
-	public static ApplicationManager getInstance(String applicationName) {
+	public static synchronized ApplicationManager getInstance() {
 		if (null == instance){
-			synchronized (instance){
-				instance = new ApplicationManager(applicationName);
-			}
-		}
-		return instance;
-	}
-
-	public static ApplicationManager getInstance(String applicationName, String nameSpace) {
-		if (null == instance){
-			synchronized (instance){
-				instance = new ApplicationManager(applicationName,nameSpace);
-			}
+			instance = new ApplicationManager();
 		}
 		return instance;
 	}
@@ -59,5 +46,21 @@ public class ApplicationManager {
 	private void loadConfiguration(){
 		String hostname = getHostname();
 
+	}
+
+	public String getBaseNamespace() {
+		return baseNamespace;
+	}
+
+	public void setBaseNamespace(String baseNamespace) {
+		this.baseNamespace = baseNamespace;
+	}
+
+	public String getApplicationName() {
+		return applicationName;
+	}
+
+	public void setApplicationName(String applicationName) {
+		this.applicationName = applicationName;
 	}
 }
